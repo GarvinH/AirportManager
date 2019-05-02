@@ -4,19 +4,18 @@
  * 04/30/2019
  */
 
+import java.util.Date;
 
 
 public class Flight implements Comparable<Flight>{
-    private String airline;
-    private String timeIn, timeOut;
-    private String from, to, date;
+    private String airline, location;
+    private Date date;
+    private boolean arrival;
 
-    Flight(String airline, String timeIn, String timeOut, String from, String to, String date){
+    Flight(String airline, boolean arrival, String from, String to, Date date){
         this.airline = airline;
-        this.timeIn = timeIn;
-        this.timeOut = timeOut;
-        this.from = from;
-        this.to = to;
+        this.arrival = arrival;
+        this.location = location;
         this.date = date;
     }
 
@@ -28,45 +27,35 @@ public class Flight implements Comparable<Flight>{
         this.airline = airline;
     }
 
-    public String getTimeIn() {
-        return this.timeIn;
+    public boolean isArrival() {
+        return arrival;
     }
 
-    public void setTimeIn(String timeIn) {
-        this.timeIn = timeIn;
+    public String getLocation() {
+        return location;
     }
 
-    public String getTimeOut() {
-        return this.timeOut;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public void setTimeOut(String timeOut) {
-        this.timeOut = timeOut;
-    }
-
-    public String getFrom() {
-        return this.from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    public String getTo() {
-        return this.to;
-    }
-
-    public void setTo(String to) {
-        this.to = to;
-    }
-
-    public String getDate(){ return this.date;}
+    public Date getDate(){ return this.date;}
 
     @Override
     public int compareTo(Flight other) {
-        //check date
+        if (isArrival() == other.isArrival()){
+            //check date
+            if (this.date.compareTo(other.getDate()) > 0) {
+                return 1;
+            } else if (this.date.compareTo(other.getDate()) < 0) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+        return location.compareTo(other.getLocation());
+
         //then see if comparing departures or arrival
         //then compare
-        return 0;
     }
 }
