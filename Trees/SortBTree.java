@@ -19,10 +19,10 @@ public class SortBTree<E extends Comparable<E>> {
         if (node.getItem().equals(item)){
             return true;
         }
-        if(item.compareTo((E) node.getItem()) > 0) {
+        if (item.compareTo((E) node.getItem()) > 0) {
             return containHelper(node.getRight(), item);
         }
-        if(item.compareTo((E) node.getItem()) < 0) {
+        if (item.compareTo((E) node.getItem()) < 0) {
             return containHelper(node.getLeft(), item);
         }
         return false; // not unique
@@ -86,7 +86,8 @@ public class SortBTree<E extends Comparable<E>> {
                     } else {
                         SortBTreeNode tempNode = node.getRight();
                         node.setRight(removeReplace(node.getRight().getRight()));
-                        node.getLeft().setLeft(tempNode.getLeft());
+                        node.getRight().setRight(tempNode.getRight());
+                        node.getRight().setLeft(tempNode.getLeft());
                     }
                     return true;
                 }
@@ -102,6 +103,7 @@ public class SortBTree<E extends Comparable<E>> {
                         SortBTreeNode tempNode = node.getLeft();
                         node.setLeft(removeReplace(node.getLeft().getRight()));
                         node.getLeft().setLeft(tempNode.getLeft());
+                        node.getLeft().setRight(tempNode.getRight());
                     }
                     return true;
                 }
