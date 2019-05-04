@@ -1,114 +1,87 @@
-/* [Flight.java]
- * Contains flight information
- * Albert Quon
- * 04/30/2019
- */
+package Trees;
 
-import java.util.Date;
-
-public class Flight implements Comparable<Flight>{
-    private String airline, location, name;
-    private Date date;
-    private boolean arrival;
-    private String status;
+class SortBTreeNode<E> {
+    private E item;
+    private SortBTreeNode left, right;
 
     /**
      *
-     * @param airline
-     * @param name
-     * @param arrival
-     * @param location
-     * @param date
+     * @param item
+     * @param left
+     * @param right
      */
-    Flight(String airline, String name, boolean arrival, String location, Date date, String status){
-        this.airline = airline;
-        this.arrival = arrival;
-        this.location = location;
-        this.date = date;
-        this.name = name;
-        this.status = status;
+    SortBTreeNode(E item, SortBTreeNode left, SortBTreeNode right){
+        this.item = item;
+        this.left = left;
+        this.right = right;
+    }
+
+    /**
+     *
+     * @param item
+     */
+    SortBTreeNode(E item){
+        this.item = item;
+        this.left = null;
+        this.right = null;
     }
 
     /**
      *
      * @return
      */
-    public String getAirline() {
-        return this.airline;
+    public E getItem() {
+        return item;
     }
 
     /**
      *
      * @return
      */
-    public String getStatus() {
-        return this.status;
+    public SortBTreeNode getRight(){
+        return this.right;
     }
 
     /**
      *
      * @return
      */
-    public boolean isArrival() {
-        return arrival;
+    public SortBTreeNode getLeft() {
+        return left;
+    }
+
+    /**
+     *
+     * @param right
+     */
+    void setRight(SortBTreeNode right) {
+        this.right = right;
+    }
+
+    /**
+     *
+     * @param left
+     */
+    public void setLeft(SortBTreeNode left) {
+        this.left = left;
+    }
+
+    /**
+     *
+     * @param item
+     */
+    public void setItem(E item) {
+        this.item = item;
     }
 
     /**
      *
      * @return
      */
-    public String getLocation() {
-        return location;
-    }
-
-    /**
-     *
-     * @param status
-     */
-    public void setStatus(String status) {
-        this.location = location;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Date getDate(){
-        return this.date;
-    }
-
-    /**
-     *
-     * @param date
-     */
-    public void setDate(Date date){
-        this.date = date;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    /**
-     *
-     */
-    public int compareTo(Flight other) {
-        if (isArrival() && other.isArrival()){
-            //check date
-            int compare = location.compareTo(other.getLocation());
-            if (compare == 0) { //sort by flight name instead
-                return date.compareTo(other.getDate());
-            } else {
-                return compare;
-            }
-        } else {
-            return -2; // its not valid to check
+    public boolean isLeaf(){
+        if ((right == null) && (left == null)){
+            return true;
         }
-
+        return false;
     }
 }
