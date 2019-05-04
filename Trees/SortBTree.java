@@ -1,8 +1,16 @@
 package Trees;
 
-public class SortBTree<E extends Comparable<E>> {
-    SortBTreeNode root;
+import StackAndQueues.Stack;
 
+public class SortBTree<E extends Comparable<E>> {
+    private SortBTreeNode root;
+    private Stack<E> flightStack; // for saving all items to be used for file saving
+
+    /**
+     *
+     * @param item
+     * @return
+     */
     public boolean contains(E item){
         if (root != null) {
             if(root.getItem().equals(item)){
@@ -12,6 +20,12 @@ public class SortBTree<E extends Comparable<E>> {
         return containHelper(root, item);
     }
 
+    /**
+     *
+     * @param node
+     * @param item
+     * @return
+     */
     private boolean containHelper(SortBTreeNode node, E item){
         if (node == null){
             return false;
@@ -28,10 +42,19 @@ public class SortBTree<E extends Comparable<E>> {
         return false; // not unique
     }
 
+    /**
+     *
+     * @return
+     */
     public int size(){
         return sizeHelper(root);
     }
 
+    /**
+     *
+     * @param node
+     * @return
+     */
     private int sizeHelper(SortBTreeNode node){
         if (node == null){
             return 0;
@@ -39,6 +62,10 @@ public class SortBTree<E extends Comparable<E>> {
         return (1 + sizeHelper(node.getLeft()) + sizeHelper(node.getRight()));
     }
 
+    /**
+     *
+     * @param item
+     */
     void add(E item){
         if (root == null){
             root = new SortBTreeNode(item);
@@ -46,6 +73,11 @@ public class SortBTree<E extends Comparable<E>> {
         addHelper(root, item);
     }
 
+    /**
+     *
+     * @param node
+     * @param item
+     */
     private void addHelper(SortBTreeNode node, E item){
         if (node == null){
             return;
@@ -69,10 +101,21 @@ public class SortBTree<E extends Comparable<E>> {
 
     }
 
-    boolean remove(E item){
+    /**
+     *
+     * @param item
+     * @return
+     */
+    public boolean remove(E item){
         return removeHelper(root, item);
     }
 
+    /**
+     *
+     * @param node
+     * @param item
+     * @return
+     */
     private boolean removeHelper(SortBTreeNode node, E item){ // if choosing left most, start right, then always go left and find smallest (if going right, start left, then always go right and find largest)
         if (node == null){
             return false;
@@ -113,6 +156,11 @@ public class SortBTree<E extends Comparable<E>> {
         return false;
     }
 
+    /**
+     *
+     * @param node
+     * @return
+     */
     private SortBTreeNode removeReplace(SortBTreeNode node){
         if(node == null) {
             return null;
@@ -129,14 +177,21 @@ public class SortBTree<E extends Comparable<E>> {
         return removeReplace(node.getLeft());
     }
 
-    boolean isEmpty(){
+    /**
+     *
+     * @return
+     */
+    public boolean isEmpty(){
         if (root == null) {
             return true;
         }
         return false;
     }
 
-    void display(){
+    /**
+     *
+     */
+    public void display(){
         if (root != null) {
             displayHelper(root);
         } else {
@@ -144,6 +199,10 @@ public class SortBTree<E extends Comparable<E>> {
         }
     }
 
+    /**
+     *
+     * @param node
+     */
     private void displayHelper(SortBTreeNode node){
         if(node == null){
             return;
@@ -158,5 +217,28 @@ public class SortBTree<E extends Comparable<E>> {
         displayHelper(node.getRight());
         displayHelper(node.getLeft());
 
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Stack saveTree(){
+       traverse(root);
+       return this.flightStack;
+    }
+
+    /**
+     *
+     * @param node
+     */
+    private void traverse(SortBTreeNode node){
+        if (node == null){
+            return;
+        } else {
+            flightStack.push((E)node.getItem());
+            traverse(node.getLeft());
+            traverse(node.getRight());
+        }
     }
 }
