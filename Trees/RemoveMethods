@@ -1,0 +1,43 @@
+boolean remove(E item) {
+        boolean exists = contains(item);
+        if (exists) {
+            BinaryTreeNode<E> tempNode = root;
+            root = deleteNode(root, item);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private BinaryTreeNode<E> deleteNode(BinaryTreeNode<E> tempNode, E item) {
+        if (tempNode == null) {
+            return tempNode;
+        }
+
+        if ((tempNode.getItem()).compareTo(item) < 0) {
+            tempNode.setRight(deleteNode(tempNode.getRight(), item));
+        } else if ((tempNode.getItem()).compareTo(item) > 0) {
+            tempNode.setLeft(deleteNode(tempNode.getLeft(), item));
+        } else {
+            if (tempNode.getRight() == null) {
+                return tempNode.getLeft();
+            } else if (tempNode.getLeft() == null) {
+                return tempNode.getRight();
+            }
+
+            tempNode.setItem((E) minValue(tempNode.getRight()));
+
+            tempNode.setRight(deleteNode(tempNode.getRight(), tempNode.getItem()));
+        }
+
+        return tempNode;
+    }
+
+    private E minValue(BinaryTreeNode<E> tempNode) {
+        E value = tempNode.getItem();
+        while(tempNode.getLeft() != null) {
+            tempNode = tempNode.getLeft();
+            value = tempNode.getItem();
+        }
+        return value;
+    }
