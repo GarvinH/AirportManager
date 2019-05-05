@@ -1,6 +1,20 @@
-<<<<<<< HEAD
-import javax.swing.*;
-import java.awt.*;
+/* [AirportManager.java]
+ * Flight management system for an airport
+ * Albert Quon & Garvin Hui
+ * 04/30/2019
+ */
+
+import javax.swing.JScrollPane;
+import java.awt.Graphics;
+import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.JTextArea;
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 
 public class AirportManager extends JFrame {
     static JFrame window;
@@ -8,6 +22,7 @@ public class AirportManager extends JFrame {
 
     public static void main(String[] args) {
         window = new AirportManager();
+        SortBTree<Flight> flights = new SortBTree<>();
     }
 
     AirportManager() {
@@ -55,34 +70,6 @@ public class AirportManager extends JFrame {
 
     }
 
-}
-
-//private class
-=======
-/* [AirportManager.java]
- * Flight management system for an airport
- * Albert Quon & Garvin Hui
- * 04/30/2019
- */
-
-import Trees.SortBTree;
-
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import javax.swing.JButton;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-public class AirportManager extends JFrame {
-
-    public static void main(String[] args) {
-        SortBTree<Flight> flights = new SortBTree<>();
-    }
-
-    private class AirportPanel extends JPanel {
-
-    }
-
     private class Button extends JButton{
 
     }
@@ -102,5 +89,5 @@ public class AirportManager extends JFrame {
 
         }
     }
+
 }
->>>>>>> origin/master
