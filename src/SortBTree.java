@@ -1,13 +1,18 @@
-
+/*
+ * [SortBTree.java]
+ * Sorted binary tree
+ * Albert Quon
+ * 2019/05/06
+ */
 
 public class SortBTree<E extends Comparable<E>> {
     private SortBTreeNode root;
     private Stack<E> itemStack; // for saving all items to be used for file saving
 
     /**
-     *
-     * @param item
-     * @return
+     * Finds if an object exists within the tree
+     * @param item Item that is to be found
+     * @return boolean value if item is found or not
      */
     public boolean contains(E item){
         if (root != null) {
@@ -19,10 +24,10 @@ public class SortBTree<E extends Comparable<E>> {
     }
 
     /**
-     *
-     * @param node
-     * @param item
-     * @return
+     * Recursive helper to traverse the tree
+     * @param node Current node
+     * @param item Item for comparison
+     * @return boolean value if item is found or not
      */
     private boolean containHelper(SortBTreeNode node, E item){
         if (node == null){
@@ -41,17 +46,17 @@ public class SortBTree<E extends Comparable<E>> {
     }
 
     /**
-     *
-     * @return
+     * Determines the size of the tree
+     * @return integer value of size
      */
     public int size(){
         return sizeHelper(root);
     }
 
     /**
-     *
+     * Recursive helper method to determine size of the tree
      * @param node
-     * @return
+     * @return integer value of size
      */
     private int sizeHelper(SortBTreeNode node){
         if (node == null){
@@ -61,17 +66,18 @@ public class SortBTree<E extends Comparable<E>> {
     }
 
     /**
-     *
+     * Insertion method
      * @param item
      */
     public void add(E item){
-        root = addHelper(root, item);
+        root = addHelper(root, item); // tree can change when adding
     }
 
     /**
-     *
-     * @param node
-     * @param item
+     * Recursive helper for insertion
+     * @param node Current node
+     * @param item Item to be compared to other nodes with
+     * @return A node that is balanced
      */
     private SortBTreeNode addHelper(SortBTreeNode node, E item){
         if (node == null){
@@ -96,10 +102,10 @@ public class SortBTree<E extends Comparable<E>> {
         } else if ((balance < -1) && (item.compareTo((E)node.getRight().getItem()) > 1)) { // right right
             return leftRotate(node);
         } else if ((balance > 1) && (item.compareTo((E)node.getLeft().getItem()) > 1)) { // left right
-            node.setLeft(leftRotate(node.getLeft())); // new parent
+            node.setLeft(leftRotate(node.getLeft()));
             return rightRotate(node);
         } else if ((balance < -1) && (item.compareTo((E)node.getRight().getItem()) < 1)) { // right left
-            node.setRight(rightRotate(node.getRight())); // new parent
+            node.setRight(rightRotate(node.getRight()));
             return leftRotate(node);
         }
 
@@ -108,21 +114,20 @@ public class SortBTree<E extends Comparable<E>> {
     }
 
     /**
-     *
-     * @param item
-     * @return
+     * Removes a node based on its item
+     * @param item Item to be removed
      */
     public void remove(E item){
         root = removeHelper(root, item);
     }
 
     /**
-     *
-     * @param node
-     * @param item
-     * @return
+     * Recursively loops through the tree to find the item, then balances the tree once found
+     * @param node Current node
+     * @param item Item to be removed
+     * @return Balanced node
      */
-    private SortBTreeNode removeHelper(SortBTreeNode node, E item){ // if choosing left most, start right, then always go left and find smallest (if going right, start left, then always go right and find largest)
+    private SortBTreeNode removeHelper(SortBTreeNode node, E item){
         if (node == null) {
             return null;
         }
@@ -146,7 +151,7 @@ public class SortBTree<E extends Comparable<E>> {
                 removeHelper(node.getRight(), (E)tempNode.getItem()); // remove the leftmost node
             }
         }
-        if (node == null) {
+        if (node == null) { // if node is a leaf
             return null;
         }
 
@@ -168,14 +173,15 @@ public class SortBTree<E extends Comparable<E>> {
             return leftRotate(node);
         }
 
+        //unchanged node
         return node;
 
     }
 
     /**
-     *
-     * @param node
-     * @return
+     * Finds the smallest node given a starting node
+     * @param node Current node
+     * @return Leftmost node from the starting node
      */
     private SortBTreeNode smallestNode(SortBTreeNode node){
         SortBTreeNode current = node;
@@ -186,8 +192,8 @@ public class SortBTree<E extends Comparable<E>> {
     }
 
     /**
-     *
-     * @return
+     * Determines if the tree is empty
+     * @return boolean value that represents if tree is empty or not
      */
     public boolean isEmpty(){
         if (root == null) {
@@ -248,7 +254,7 @@ public class SortBTree<E extends Comparable<E>> {
     }
 
     /**
-     * Finds the height of the node and avoids dealing with NullPointerException
+     * Finds the height of the node and used in dealing with NullPointerException
      * @param node the node
      * @return the height of the node
      */
@@ -260,9 +266,9 @@ public class SortBTree<E extends Comparable<E>> {
     }
 
     /**
-     *
-     * @param node
-     * @return
+     * Finds the balance factor of a node based on its children
+     * @param node The balance factor of the node to be determined
+     * @return integer value of the balance factor
      */
     private int balance(SortBTreeNode node) {
         if (node == null) {
@@ -271,6 +277,11 @@ public class SortBTree<E extends Comparable<E>> {
         return nodeHeight(node.getLeft()) - nodeHeight(node.getRight());
     }
 
+    /**
+     * Rotates nodes in a counterclockwise direction while maintaining order
+     * @param node The root node that is used to reference its successors
+     * @return The new root node
+     */
     private SortBTreeNode leftRotate(SortBTreeNode node) {
         SortBTreeNode right = node.getRight();
         SortBTreeNode rightLeft = right.getLeft();
@@ -286,6 +297,11 @@ public class SortBTree<E extends Comparable<E>> {
         return right; // return the node so it can be used for the parent
     }
 
+    /**
+     * Rotates nodes in a clockwise direction while maintaining order
+     * @param node The root node that is used to reference its successors
+     * @return The new root node
+     */
     private SortBTreeNode rightRotate(SortBTreeNode node) {
         SortBTreeNode left = node.getLeft();
         SortBTreeNode leftRight = left.getRight();
@@ -302,8 +318,8 @@ public class SortBTree<E extends Comparable<E>> {
     }
 
     /**
-     *
-     * @return
+     * Saves all of the tree's items and put into a stack
+     * @return Stack with sorted items
      */
     public Stack saveTree(){
         itemStack = new Stack<E>();
@@ -312,8 +328,8 @@ public class SortBTree<E extends Comparable<E>> {
     }
 
     /**
-     *
-     * @param node
+     * Recursively goes through the tree and pushes the items into a stack in order
+     * @param node Current node
      */
     private void traverse(SortBTreeNode node){
         if (node == null){

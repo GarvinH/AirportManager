@@ -1,4 +1,9 @@
-
+/*
+ * [Stack.java]
+ * Stack data structure
+ * Albert Quon
+ * 2019/05/06
+ */
 
 public class Stack<E> {
     StNode<E> top;

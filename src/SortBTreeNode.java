@@ -1,4 +1,9 @@
-
+/*
+ * [SortBTreeNode.java]
+ * Node for the binary tree
+ * Albert Quon
+ * 2019/05/06
+ */
 
 class SortBTreeNode<E> {
     private E item;
@@ -87,10 +92,18 @@ class SortBTreeNode<E> {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     *
+     * @param height
+     */
     public void setHeight(int height) {
         this.height = height;
     }

@@ -13,6 +13,11 @@ import javax.swing.JButton;
 public class AirportManager extends JFrame {
 
     static SortBTree arrivals, departures;
+
+    /**
+     * Main method
+     * @param args
+     */
     public static void main(String[] args) {
         arrivals = new SortBTree<>();
         departures = new SortBTree<>();
@@ -33,7 +38,7 @@ public class AirportManager extends JFrame {
     }
 
     /**
-     *
+     * Loads up items from a text file and creates two trees to store the data
      */
     public static void loadFile() {
         BufferedReader fileInput = null;
@@ -131,8 +136,6 @@ public class AirportManager extends JFrame {
                 flightInfo = fileInput.readLine();
             }
 
-
-
         } catch(IOException e){
             e.printStackTrace();
         } finally {
@@ -144,6 +147,9 @@ public class AirportManager extends JFrame {
         }
     }
 
+    /**
+     * Saves the current tree onto a file
+     */
     public static void saveFile(){
 
         try {
@@ -171,11 +177,57 @@ public class AirportManager extends JFrame {
                 output.println("");
                 tempFlight = departList.pop();
             }
-
             output.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Changes a flight's current status
+     * @param flight Name of the flight
+     * @param status Status to be changed to
+     * @return boolean value if flight is valid
+     */
+    public static boolean changeFlightStatus(String flight, String status) {
+        Stack<Flight> arrivalStack = arrivals.saveTree();
+        Stack<Flight> departStack = departures.saveTree();
+        Flight tempFlight;
+        do {
+            tempFlight = arrivalStack.pop();
+            if ((tempFlight == null) || (!tempFlight.getName().equalsIgnoreCase(flight))) {
+                tempFlight = departStack.pop();
+            }
+        } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
+
+        if (tempFlight != null) {
+            tempFlight.setStatus(status);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Changes a flight's arrival/departure time
+     * @param flight Name of the flight
+     * @param time Time to be changed to
+     * @return boolean value if flight is valid
+     */
+    public static boolean changeFlightTime(String flight, String time) {
+        Stack<Flight> arrivalStack = arrivals.saveTree();
+        Stack<Flight> departStack = departures.saveTree();
+        Flight tempFlight;
+        do {
+            tempFlight = arrivalStack.pop();
+            if ((tempFlight == null) || (!tempFlight.getName().equalsIgnoreCase(flight))) {
+                tempFlight = departStack.pop();
+            }
+        } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
+        if (tempFlight != null) {
+            tempFlight.setTime(time);
+            return true;
+        }
+        return false;
     }
 
     private class AirportPanel extends JPanel {
