@@ -4,16 +4,20 @@
  * 04/30/2019
  */
 
-import javax.swing.JScrollPane;
-import java.awt.Graphics;
-import java.awt.Color;
-import java.awt.Dimension;
-import javax.swing.JTextArea;
-import javax.swing.JPanel;
-import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.ActionListener;
+import java.time.LocalDate;
 
 
 public class AirportManager extends JFrame {
@@ -27,30 +31,126 @@ public class AirportManager extends JFrame {
 
     AirportManager() {
         super("Flight Editor");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(640, 480);
+        //getContentPane().setLayout(null);
+
+        String[] dayStrings = new String[31];
+        String[] monthStrings = new String[12];
+        for (int i = 1; i < 32; i++) {
+            dayStrings[i-1] = Integer.toString(i);
+            if (i < 13) {
+                monthStrings[i-1] = Integer.toString(i);
+            }
+        }
+        JComboBox dayOptions = new JComboBox(dayStrings);
+        JComboBox monthOptions = new JComboBox(monthStrings);
+        JPanel dateHolder = new JPanel();
+        JPanel monthHolder = new JPanel();
+        //dateHolder.setLayout(null);
+        dateHolder.setSize(new Dimension(50,50));
+        dateHolder.add(dayOptions, BorderLayout.PAGE_START);
+        dateHolder.setLocation(10,10);
+        monthHolder.setSize(new Dimension(50,50));
+        monthHolder.add(monthOptions, BorderLayout.PAGE_START);
+        monthHolder.setLocation(70,10);
+
+        //JTabbedPane flightTabs = new JTabbedPane();
 
         flightEditor = new AirportPanel();
-        flightEditor.add(new testScroll());
-        this.add(flightEditor);
+        flightEditor.setBounds(0,0,getWidth(),getHeight());
+        //flightTabs.addTab("Add a Flight", flightEditor);
+        //flightTabs.setMnemonicAt(0, KeyEvent.VK_1);
+        add(new AirportTabs());
+        //flightEditor.add(new testScroll());
+        //add(flightEditor);
+        //add(dayOptions, BorderLayout.PAGE_START);
+        //add(dateHolder);
+        //add(monthHolder);
 
         //this.add(new JScrollPane(new JTextField("Hello Wolrd \nt\nt\nt\nt\nt\nt\nt\nt\nt\ntt\nt\nt\nasdlkfjapjjgaporiaigp")));
         //use jlist
 
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(640, 480);
         this.setVisible(true);
     }
 
-    private class AirportPanel extends JPanel {
+    private class AirportTabs extends JTabbedPane {
+        AirportTabs() {
+            addTab("Add a Flight", flightEditor);
+            setMnemonicAt(0, KeyEvent.VK_1);
+            addTab("Remove a Flight", new JPanel());
+            setMnemonicAt(1,KeyEvent.VK_2);
+        }
+    }
+
+    private class AirportPanel extends JPanel implements ActionListener{
+        String selectedYear;
+        String selectedMonth;
+        JComboBox yearOptions;
+        JComboBox monthOptions;
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             this.setDoubleBuffered(true);
-            g.setColor(Color.BLACK);
+            setLayout(null);
+
+            LocalDate currentDate = LocalDate.now();
+            int year = currentDate.getYear();
+
+            JTextArea dateTitle = new JTextArea("Date");
+            dateTitle.setFont(new Font("Arial", Font.BOLD, 16));
+
+            JTextArea dayTitle = new JTextArea("Day");
+            JTextArea monthTitle = new JTextArea("Month");
+            JTextArea yearTitle = new JTextArea("Year");
+
+            String[] yearStrings = {"-", Integer.toString(year), Integer.toString(year+1)};
+            String[] monthStrings = new String[13];
+            monthStrings[0] = "-";
+            for (int i = 1; i < 13; i++) {
+                monthStrings[i] = Integer.toString(i);
+            }
+            String[] dayStrings = new String[32];
+            dayStrings[0] = "-";
+            for (int i = 1; i < 32; i++) {
+                dayStrings[i] = Integer.toString(i);
+            }
+            JComboBox dayOptions = new JComboBox(dayStrings);
+            monthOptions = new JComboBox(monthStrings);
+            yearOptions = new JComboBox(yearStrings);
+            yearOptions.addActionListener(this);
+
+            dateTitle.setBounds(10,10,35,15);
+            yearTitle.setBounds(10,35,30,15);
+            yearOptions.setBounds(10,60,55,25);
+            monthTitle.setBounds(85, 35, 35, 15);
+            monthOptions.setBounds(85, 60, 40, 25);
+            dayTitle.setBounds(150, 35, 25, 15);
+            dayOptions.setBounds(150,60,40,25);
+            //setSize(new Dimension(50,50));
+
+            add(dateTitle);
+            add(yearOptions);
+            add(yearTitle);
+            add(monthOptions);
+            add(monthTitle);
+            add(dayOptions);
+            add(dayTitle);
+            System.out.println((String)yearOptions.getSelectedItem());
+            //setLocation(50,50);
+            //setBounds(50,50,50,50);
+            /*g.setColor(Color.BLACK);
             g.fillRect(100,400, 200, 200);
-            this.setPreferredSize(new Dimension(640,480));
+            this.setPreferredSize(new Dimension(640,480));*/
 
 
 
             repaint();
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JComboBox cb = (JComboBox)e.getSource();
+            cb.setSelectedItem(cb.getSelectedItem());
         }
     }
 
