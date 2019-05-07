@@ -38,7 +38,7 @@ public class AirportManager extends JFrame {
     }
 
     /**
-     * Loads up items from a text file and creates two trees to store the data
+     * Loads up trees from a text file and stores the data into trees
      */
     public static void loadFile() {
         BufferedReader fileInput = null;
@@ -148,7 +148,7 @@ public class AirportManager extends JFrame {
     }
 
     /**
-     * Saves the current tree onto a file
+     * Saves the current trees onto text files
      */
     public static void saveFile(){
 
