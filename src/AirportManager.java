@@ -46,6 +46,7 @@ public class AirportManager extends JFrame {
         String flightInfo;
         int category;
         try {
+            // find the arrivals
             File arriveFile = new File("arrivals.txt");
             fileInput = new BufferedReader(new FileReader(arriveFile));
             flightInfo = fileInput.readLine();
@@ -91,6 +92,8 @@ public class AirportManager extends JFrame {
                 flightInfo = fileInput.readLine();
             }
             fileInput.close();
+
+            // find the departures
             File departFile = new File("departures.txt");
             fileInput = new BufferedReader(new FileReader(departFile));
             flightInfo = fileInput.readLine();

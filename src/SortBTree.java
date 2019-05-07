@@ -33,16 +33,16 @@ public class SortBTree<E extends Comparable<E>> {
         if (node == null){
             return false;
         }
-        if (node.getItem().equals(item)){
+        if (node.getItem().equals(item)){ // item is found
             return true;
         }
-        if (item.compareTo((E) node.getItem()) > 0) {
+        if (item.compareTo((E) node.getItem()) > 0) { // if item is compared to be lower then go to the left child
             return containHelper(node.getRight(), item);
         }
-        if (item.compareTo((E) node.getItem()) < 0) {
+        if (item.compareTo((E) node.getItem()) < 0) { // if item is compared to be higher then go to the right child
             return containHelper(node.getLeft(), item);
         }
-        return false; // not unique
+        return false; // not present
     }
 
     /**
@@ -185,7 +185,7 @@ public class SortBTree<E extends Comparable<E>> {
      */
     private SortBTreeNode smallestNode(SortBTreeNode node){
         SortBTreeNode current = node;
-        while (current.getLeft() != null) {
+        while (current.getLeft() != null) { // keeps going left
             current = current.getLeft();
         }
         return current;
@@ -203,22 +203,22 @@ public class SortBTree<E extends Comparable<E>> {
     }
 
     /**
-     *
+     * Outputs the tree's items in order
      */
     public void displayInOrder() {
         displayInOrderHelper(root);
     }
 
     /**
-     *
+     * Recursively loops through the tree and outputs the tree's items in order
      */
     private void displayInOrderHelper(SortBTreeNode node) {
         if (node == null) {
             return;
         }
-        displayInOrderHelper(node.getLeft());
-        System.out.println(node.getItem());
-        displayInOrderHelper(node.getRight());
+        displayInOrderHelper(node.getLeft()); //print leftmost node
+        System.out.println(node.getItem()); // print current node
+        displayInOrderHelper(node.getRight()); // print greater node
 
     }
 
@@ -271,10 +271,10 @@ public class SortBTree<E extends Comparable<E>> {
      * @return integer value of the balance factor
      */
     private int balance(SortBTreeNode node) {
-        if (node == null) {
+        if (node == null) { //deals with null pointer
             return 0;
         }
-        return nodeHeight(node.getLeft()) - nodeHeight(node.getRight());
+        return nodeHeight(node.getLeft()) - nodeHeight(node.getRight()); // height is based on subtree
     }
 
     /**
@@ -335,9 +335,9 @@ public class SortBTree<E extends Comparable<E>> {
         if (node == null){
             return;
         } else {
-            traverse(node.getLeft());
-            itemStack.push((E)node.getItem());
-            traverse(node.getRight());
+            traverse(node.getLeft()); // put in the smallest node first
+            itemStack.push((E)node.getItem()); // put in current node
+            traverse(node.getRight()); // put in greatest node last
 
 
         }
