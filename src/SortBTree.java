@@ -1,6 +1,6 @@
 /*
  * [SortBTree.java]
- * Sorted binary tree
+ * Sorted Binary Tree, which is self-balanced as an AVL tree
  * Albert Quon
  * 2019/05/06
  */
