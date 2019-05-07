@@ -18,6 +18,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 
 public class AirportManager extends JFrame {
@@ -83,16 +84,12 @@ public class AirportManager extends JFrame {
         }
     }
 
-    private class AirportPanel extends JPanel implements ActionListener{
-        String selectedYear;
-        String selectedMonth;
+    private class AirportPanel extends JPanel {
         JComboBox yearOptions;
         JComboBox monthOptions;
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            this.setDoubleBuffered(true);
+        JComboBox dayOptions;
+        AirportPanel() {
             setLayout(null);
-
             LocalDate currentDate = LocalDate.now();
             int year = currentDate.getYear();
 
@@ -109,15 +106,14 @@ public class AirportManager extends JFrame {
             for (int i = 1; i < 13; i++) {
                 monthStrings[i] = Integer.toString(i);
             }
-            String[] dayStrings = new String[32];
-            dayStrings[0] = "-";
+            ArrayList<String> dayStrings = new ArrayList<String>();
+            dayStrings.add("-");
             for (int i = 1; i < 32; i++) {
-                dayStrings[i] = Integer.toString(i);
+                dayStrings.add(Integer.toString(i));
             }
-            JComboBox dayOptions = new JComboBox(dayStrings);
+            dayOptions = new JComboBox(dayStrings.toArray());
             monthOptions = new JComboBox(monthStrings);
             yearOptions = new JComboBox(yearStrings);
-            yearOptions.addActionListener(this);
 
             dateTitle.setBounds(10,10,35,15);
             yearTitle.setBounds(10,35,30,15);
@@ -135,7 +131,27 @@ public class AirportManager extends JFrame {
             add(monthTitle);
             add(dayOptions);
             add(dayTitle);
-            System.out.println((String)yearOptions.getSelectedItem());
+        }
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            this.setDoubleBuffered(true);
+            setLayout(null);
+
+            if (!monthOptions.getSelectedItem().equals("-")) {
+                int monthNumber = Integer.parseInt((String)monthOptions.getSelectedItem();
+                if (monthNumber % 2 == 1) {
+                    if (dayOptions.getItemCount() < 31) {
+                        for (int i = 1; i < 32; i++) {
+                            if (!dayOptions.getItemAt(i).equals(Integer.toString(i))) {
+                                dayOptions.addItem(Integer.toString(i));
+                            }
+                        }
+                    }
+                } else {
+
+                }
+            }
+            //System.out.println((String)yearOptions.getSelectedItem());
             //setLocation(50,50);
             //setBounds(50,50,50,50);
             /*g.setColor(Color.BLACK);
@@ -145,12 +161,6 @@ public class AirportManager extends JFrame {
 
 
             repaint();
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JComboBox cb = (JComboBox)e.getSource();
-            cb.setSelectedItem(cb.getSelectedItem());
         }
     }
 
