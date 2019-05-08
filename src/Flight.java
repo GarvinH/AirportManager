@@ -5,7 +5,7 @@
  */
 
 
-public class Flight implements Comparable<Flight>{
+public class Flight implements Comparable<Flight>, java.io.Serializable {
     private String airline, location, name, date, time;
     private String status;
 
@@ -107,12 +107,13 @@ public class Flight implements Comparable<Flight>{
      * @return integer value either negative, zero, or positive based on the comparison
      */
     public int compareTo(Flight other) {
-        int timeA, timeB;
+        int timeA, timeB; // compares times
         String otherDate = other.getDate();
+
         // compare location
         int compare = location.compareTo(other.getLocation());
         if (compare == 0) {
-            //sort by times if destination/origin is the same
+            //sort by date if destination/origin is the same
             //compare year
             timeA = Integer.parseInt(date.substring(0,date.indexOf("/")));
             timeB = Integer.parseInt(otherDate.substring(0,otherDate.indexOf("/")));

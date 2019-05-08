@@ -21,13 +21,13 @@ public class AirportManager extends JFrame {
     public static void main(String[] args) {
         arrivals = new SortBTree<>();
         departures = new SortBTree<>();
-        //arrivals.add(new Flight("SA1", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        //arrivals.add(new Flight("AC2", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-       // departures.add(new Flight("CA3", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        //departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+//        arrivals.add(new Flight("SA1", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+//        arrivals.add(new Flight("AC2", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+//        departures.add(new Flight("CA3", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+//        departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
         //arrivals.displayInOrder();
-       // departures.displayInOrder();
-        //saveFile();
+        //departures.displayInOrder();
+       // saveFile();
         loadFile();
         Stack<Flight> test = arrivals.saveTree();
         System.out.println(test.pop().getName());
@@ -41,112 +41,39 @@ public class AirportManager extends JFrame {
      * Loads up trees from a text file and stores the data into trees
      */
     public static void loadFile() {
-        BufferedReader fileInput = null;
-        String name = "", airline = "", status = "", location = "", date = "", time = "", tempString;
-        String flightInfo;
-        int category;
+        ObjectInputStream fileInput;
+        Flight flightInfo;
+        Integer size;
         try {
-            // find the arrivals
-            File arriveFile = new File("arrivals.txt");
-            fileInput = new BufferedReader(new FileReader(arriveFile));
-            flightInfo = fileInput.readLine();
-            while(flightInfo != null) {
-                category = 0;
-                tempString = "";
-                for (int i = 0; i < flightInfo.length(); i++) {
-                    if(flightInfo.charAt(i) != ',') {
-                        tempString += flightInfo.substring(i, i+1);
-                    } else {
-                        //read name, airline, location, date, time, and status
-                        switch (category) {
-                            case (0): {
-                                name = tempString;
-                                break;
-                            }
-                            case (1): {
-                                airline = tempString;
-                                break;
-                            }
-                            case (2): {
-                                location = tempString;
-                                break;
-                            }
-                            case (3): {
-                                date = tempString;
-                                break;
-                            }
-                            case (4): {
-                                time = tempString;
-                                break;
-                            }
-                            case (5): {
-                                status = tempString;
-                                break;
-                            }
-                        }
-                        category++;
-                        tempString = "";
-                    }
-                }
-                arrivals.add(new Flight(name, airline, location, date, time, status));
-                flightInfo = fileInput.readLine();
+            // load the arrivals
+            FileInputStream arriveFile = new FileInputStream("arrivals.ser");
+            fileInput = new ObjectInputStream(arriveFile);
+            size = (Integer) fileInput.readObject(); // the size of the tree to indicate end of file
+
+            for (int i = 0; i < size; i++) {
+                flightInfo = (Flight) fileInput.readObject();
+                arrivals.add(flightInfo);
+            }
+
+            fileInput.close();
+            arriveFile.close();
+
+            // load the departures
+            FileInputStream departFile = new FileInputStream("departures.ser");
+            fileInput = new ObjectInputStream(departFile);
+            size = (Integer) fileInput.readObject(); // the size of the tree to indicate end of file
+
+            for(int i = 0; i< size; i++) {
+                flightInfo = (Flight) fileInput.readObject();
+                departures.add(flightInfo);
             }
             fileInput.close();
-
-            // find the departures
-            File departFile = new File("departures.txt");
-            fileInput = new BufferedReader(new FileReader(departFile));
-            flightInfo = fileInput.readLine();
-            while(flightInfo != null) {
-                category = 0;
-                tempString = "";
-                for (int i = 0; i < flightInfo.length(); i++) {
-                    if(flightInfo.charAt(i) != ',') {
-                        tempString += flightInfo.substring(i, i+1);
-                    } else {
-                        //read name, airline, location, date, time, and status
-                        switch (category) {
-                            case (0): {
-                                name = tempString;
-                                break;
-                            }
-                            case (1): {
-                                airline = tempString;
-                                break;
-                            }
-                            case (2): {
-                                location = tempString;
-                                break;
-                            }
-                            case (3): {
-                                date = tempString;
-                                break;
-                            }
-                            case (4): {
-                                time = tempString;
-                                break;
-                            }
-                            case (5): {
-                                status = tempString;
-                                break;
-                            }
-                        }
-                        category++;
-                        tempString = "";
-                    }
-                }
-                departures.add(new Flight(name, airline, location, date, time, status));
-                flightInfo = fileInput.readLine();
-            }
+            departFile.close();
 
         } catch(IOException e){
             e.printStackTrace();
-        } finally {
-            try {
-                fileInput.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch(ClassNotFoundException e){
+            e.printStackTrace();
         }
     }
 
@@ -154,33 +81,35 @@ public class AirportManager extends JFrame {
      * Saves the current trees onto text files
      */
     public static void saveFile(){
-
+        Integer size;
         try {
             Flight tempFlight = null;
-            File arriveFile = new File("arrivals.txt");
-            File departFile = new File("departures.txt");
-            PrintWriter output = new PrintWriter(arriveFile);
+            FileOutputStream arriveFile = new FileOutputStream("arrivals.ser");
+            FileOutputStream departFile = new FileOutputStream("departures.ser");
+
+            //save arrivals
+            ObjectOutputStream output = new ObjectOutputStream(arriveFile);
             Stack<Flight> arriveList = arrivals.saveTree();
-            tempFlight = arriveList.pop();
-            while(tempFlight != null){
-                System.out.println(tempFlight.getName());
-                output.print(tempFlight.getName() + "," + tempFlight.getAirline() + "," + tempFlight.getLocation() +
-                        "," + tempFlight.getDate() + "," + tempFlight.getTime() + "," + tempFlight.getStatus() + ",");
-                output.println("");
+            size = arrivals.size(); // save the size of the tree to indicate end of file
+            output.writeObject(size);
+            for(int i = 0; i < size; i++) {
                 tempFlight = arriveList.pop();
+                output.writeObject(tempFlight);
             }
             output.close();
-            output = new PrintWriter(departFile);
+            arriveFile.close();
+
+            // save departures
+            output = new ObjectOutputStream(departFile);
             Stack<Flight> departList = departures.saveTree();
-            tempFlight = departList.pop();
-            while(tempFlight != null){
-                System.out.println(tempFlight.getName());
-                output.print(tempFlight.getName() + "," + tempFlight.getAirline() + "," + tempFlight.getLocation() +
-                        "," + tempFlight.getDate() + "," + tempFlight.getTime() + "," + tempFlight.getStatus() + ",");
-                output.println("");
+            size = departures.size(); // save the size of the tree to indicate end of file
+            output.writeObject(size);
+            for(int i = 0; i < size; i++) {
                 tempFlight = departList.pop();
+                output.writeObject(tempFlight);
             }
             output.close();
+            departFile.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

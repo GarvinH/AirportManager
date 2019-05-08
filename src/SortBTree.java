@@ -90,22 +90,27 @@ public class SortBTree<E extends Comparable<E>> {
         } else { // prevent duplicates
             return node;
         }
+
+        //****************************************BALANCE THE NODE************************************************
+
         // change height due to the addition of a node
         node.setHeight(node.getHeight()+1 + Integer.max(nodeHeight(node.getLeft()), nodeHeight(node.getRight())));
-        int balance = balance(node);
+        int balance = balance(node); // find the balance based on the heights of its children
+
         // if node's balance is greater than 1 or less than -1, then it's unbalanced
         // check 4 cases of being unbalanced
+        // rotate nodes to fix the balance while maintaining order
 
         // left left
         if ((balance > 1) && (item.compareTo((E)node.getLeft().getItem()) < 1)) {
-            return rightRotate(node);
+            return rightRotate(node); // rotate right
         } else if ((balance < -1) && (item.compareTo((E)node.getRight().getItem()) > 1)) { // right right
             return leftRotate(node);
         } else if ((balance > 1) && (item.compareTo((E)node.getLeft().getItem()) > 1)) { // left right
-            node.setLeft(leftRotate(node.getLeft()));
+            node.setLeft(leftRotate(node.getLeft())); // new parent
             return rightRotate(node);
         } else if ((balance < -1) && (item.compareTo((E)node.getRight().getItem()) < 1)) { // right left
-            node.setRight(rightRotate(node.getRight()));
+            node.setRight(rightRotate(node.getRight())); // new parent
             return leftRotate(node);
         }
 
@@ -131,11 +136,13 @@ public class SortBTree<E extends Comparable<E>> {
         if (node == null) {
             return null;
         }
+        // do regular remove
         if (item.compareTo((E) node.getItem()) > 0) {
             node.setRight(removeHelper(node.getRight(), item));
         } else if (item.compareTo((E) node.getItem()) < 0) {
             node.setLeft(removeHelper(node.getLeft(), item));
         } else { // item is found
+            // handle cases
             // node with no child
             if (node.isLeaf()) {
                 node = null;
@@ -151,18 +158,23 @@ public class SortBTree<E extends Comparable<E>> {
                 removeHelper(node.getRight(), (E)tempNode.getItem()); // remove the leftmost node
             }
         }
+
+        //***************************************BALANCE THE NODE*********************************************
         if (node == null) { // if node is a leaf
             return null;
         }
 
-        node.setHeight(Integer.max(nodeHeight(node.getRight()), nodeHeight(node.getLeft())) + 1); // set the height of the current node
-        int balance = balance(node);
+        // reset height and find the difference in heights
+        node.setHeight(Integer.max(nodeHeight(node.getRight()), nodeHeight(node.getLeft())) + 1); // new height based on children
+        int balance = balance(node); // find the balance based on the heights of its children
+
         // if node's balance is greater than 1 or less than -1, then it's unbalanced
         // check 4 cases of being unbalanced
+        // rotate nodes to fix the balance while maintaining order
 
         // left left
         if ((balance > 1) && (item.compareTo((E)node.getLeft().getItem()) < 1)) {
-            return rightRotate(node);
+            return rightRotate(node); // rotate right
         } else if ((balance < -1) && (item.compareTo((E)node.getRight().getItem()) > 1)) { // right right
             return leftRotate(node);
         } else if ((balance > 1) && (item.compareTo((E)node.getLeft().getItem()) > 1)) { // left right
@@ -223,7 +235,7 @@ public class SortBTree<E extends Comparable<E>> {
     }
 
     /**
-     *
+     * Outputs the items from the nodes of the tree
      */
     public void display(){
         if (root != null) {
@@ -234,7 +246,7 @@ public class SortBTree<E extends Comparable<E>> {
     }
 
     /**
-     *
+     * Recursively outputs the items of the nodes from the tree
      * @param node
      */
     private void displayHelper(SortBTreeNode node){
