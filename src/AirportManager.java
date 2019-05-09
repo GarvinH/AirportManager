@@ -4,22 +4,38 @@
  * 04/30/2019
  */
 
-import javax.swing.*;
-import javax.swing.border.Border;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 
 
 public class AirportManager extends JFrame {
     static JFrame window;
     JPanel flightEditor;
+    static SortBTree arrivals, departures;
 
     public static void main(String[] args) {
         window = new AirportManager();
@@ -269,6 +285,132 @@ public class AirportManager extends JFrame {
             g.drawString("Minute", 75, 140);
         }
     }
+
+    /**
+     * Loads up trees from a text file and stores the data into trees
+     */
+    public static void loadFile() {
+        ObjectInputStream fileInput;
+        Flight flightInfo;
+        Integer size;
+        try {
+            // load the arrivals
+            FileInputStream arriveFile = new FileInputStream("arrivals.ser");
+            fileInput = new ObjectInputStream(arriveFile);
+            size = (Integer) fileInput.readObject(); // the size of the tree to indicate end of file
+
+            for (int i = 0; i < size; i++) {
+                flightInfo = (Flight) fileInput.readObject();
+                arrivals.add(flightInfo);
+            }
+
+            fileInput.close();
+            arriveFile.close();
+
+            // load the departures
+            FileInputStream departFile = new FileInputStream("departures.ser");
+            fileInput = new ObjectInputStream(departFile);
+            size = (Integer) fileInput.readObject(); // the size of the tree to indicate end of file
+
+            for(int i = 0; i< size; i++) {
+                flightInfo = (Flight) fileInput.readObject();
+                departures.add(flightInfo);
+            }
+            fileInput.close();
+            departFile.close();
+
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Saves the current trees onto text files
+     */
+    public static void saveFile(){
+        Integer size;
+        try {
+            Flight tempFlight = null;
+            FileOutputStream arriveFile = new FileOutputStream("arrivals.ser");
+            FileOutputStream departFile = new FileOutputStream("departures.ser");
+
+            //save arrivals
+            ObjectOutputStream output = new ObjectOutputStream(arriveFile);
+            Stack<Flight> arriveList = arrivals.saveTree();
+            size = arrivals.size(); // save the size of the tree to indicate end of file
+            output.writeObject(size);
+            for(int i = 0; i < size; i++) {
+                tempFlight = arriveList.pop();
+                output.writeObject(tempFlight);
+            }
+            output.close();
+            arriveFile.close();
+
+            // save departures
+            output = new ObjectOutputStream(departFile);
+            Stack<Flight> departList = departures.saveTree();
+            size = departures.size(); // save the size of the tree to indicate end of file
+            output.writeObject(size);
+            for(int i = 0; i < size; i++) {
+                tempFlight = departList.pop();
+                output.writeObject(tempFlight);
+            }
+            output.close();
+            departFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Changes a flight's current status
+     * @param flight Name of the flight
+     * @param status Status to be changed to
+     * @return boolean value if flight is valid
+     */
+    public static boolean changeFlightStatus(String flight, String status) {
+        Stack<Flight> arrivalStack = arrivals.saveTree();
+        Stack<Flight> departStack = departures.saveTree();
+        Flight tempFlight;
+        do {
+            tempFlight = arrivalStack.pop();
+            if ((tempFlight == null) || (!tempFlight.getName().equalsIgnoreCase(flight))) {
+                tempFlight = departStack.pop();
+            }
+        } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
+
+        if (tempFlight != null) {
+            tempFlight.setStatus(status);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Changes a flight's arrival/departure time
+     * @param flight Name of the flight
+     * @param time Time to be changed to
+     * @return boolean value if flight is valid
+     */
+    public static boolean changeFlightTime(String flight, String time) {
+        Stack<Flight> arrivalStack = arrivals.saveTree();
+        Stack<Flight> departStack = departures.saveTree();
+        Flight tempFlight;
+        do {
+            tempFlight = arrivalStack.pop();
+            if ((tempFlight == null) || (!tempFlight.getName().equalsIgnoreCase(flight))) {
+                tempFlight = departStack.pop();
+            }
+        } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
+        if (tempFlight != null) {
+            tempFlight.setTime(time);
+            return true;
+        }
+        return false;
+    }
+
 
     private class testScroll extends JScrollPane {
         testScroll() {
