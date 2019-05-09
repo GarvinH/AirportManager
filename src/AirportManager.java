@@ -21,17 +21,18 @@ public class AirportManager extends JFrame {
     public static void main(String[] args) {
         arrivals = new SortBTree<>();
         departures = new SortBTree<>();
-//        arrivals.add(new Flight("SA1", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-//        arrivals.add(new Flight("AC2", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-//        departures.add(new Flight("CA3", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-//        departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        //arrivals.displayInOrder();
-        //departures.displayInOrder();
+        arrivals.add(new Flight("SA1", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        arrivals.add(new Flight("AC2", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        departures.add(new Flight("CA3", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        arrivals.displayInOrder();
+        System.out.println(removeFlight("SA2"));
+        departures.displayInOrder();
        // saveFile();
-        loadFile();
+        //loadFile();
         Stack<Flight> test = arrivals.saveTree();
         System.out.println(test.pop().getName());
-        System.out.println(test.pop().getName());
+        System.out.println(test.pop());
         test = departures.saveTree();
         System.out.println(test.pop().getName());
         System.out.println(test.pop().getName());
@@ -159,6 +160,36 @@ public class AirportManager extends JFrame {
             tempFlight.setTime(time);
             return true;
         }
+        return false;
+    }
+
+    /**
+     * Removes a flight from the database
+     * @param flight The flight name
+     * @return Boolean value indicating success or failure
+     */
+    public static boolean removeFlight(String flight) {
+        Stack<Flight> arrivalStack = arrivals.saveTree();
+        Stack<Flight> departStack = departures.saveTree();
+        Flight tempFlight;
+        do {
+            tempFlight = arrivalStack.pop();
+        } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
+
+        if (tempFlight != null) {
+            arrivals.remove(tempFlight);
+            return true;
+        } else {
+            do {
+                tempFlight = arrivalStack.pop();
+            } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
+        }
+
+        if (tempFlight != null) {
+            departures.remove(tempFlight);
+            return true;
+        }
+
         return false;
     }
 
