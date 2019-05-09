@@ -4,27 +4,15 @@
  * 04/30/2019
  */
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.Arrays;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
+import javax.swing.border.Border;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
@@ -162,7 +150,44 @@ public class AirportManager extends JFrame {
             addFlight.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    boolean add = true;
+                    if (!yearOptions.getSelectedItem().equals("-")) {
+                        if (!monthOptions.getSelectedItem().equals("-")) {
+                            if (!dayOptions.getSelectedItem().equals("-")) {
+                                if (!hourOptions.getSelectedItem().equals("-")) {
+                                    if (!minuteOptions.getSelectedItem().equals("-")) {
+                                        if (!setLocation.getText().equals("")) {
+                                            if (!direction.getSelectedItem().equals("-")) {
+                                                if (!flightName.getText().equals("")) {
+                                                    if (!flightCompany.getText().equals("")) {
 
+                                                    } else {
+                                                        flightCompany.setBorder(BorderFactory.createLineBorder(Color.RED));
+                                                    }
+                                                } else {
+                                                    flightName.setBorder(BorderFactory.createLineBorder(Color.RED));
+                                                }
+                                            } else {
+                                                setLocation.setBorder(BorderFactory.createLineBorder(Color.RED));
+                                            }
+                                        } else {
+                                            setLocation.setBorder(BorderFactory.createLineBorder(Color.RED));
+                                        }
+                                    } else {
+                                        minuteOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
+                                    }
+                                } else {
+                                    hourOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
+                                }
+                            } else {
+                                dayOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
+                            }
+                        } else {
+                            monthOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        }
+                    } else {
+                        yearOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
+                    }
                 }
             });
             clear.addActionListener(new ActionListener() {
@@ -177,6 +202,15 @@ public class AirportManager extends JFrame {
                     direction.setSelectedIndex(0);
                     flightName.setText("");
                     flightCompany.setText("");
+                    yearOptions.setBorder(BorderFactory.createEmptyBorder());
+                    monthOptions.setBorder(BorderFactory.createEmptyBorder());
+                    dayOptions.setBorder(BorderFactory.createEmptyBorder());
+                    hourOptions.setBorder(BorderFactory.createEmptyBorder());
+                    minuteOptions.setBorder(BorderFactory.createEmptyBorder());
+                    setLocation.setBorder(BorderFactory.createEmptyBorder());
+                    direction.setBorder(BorderFactory.createEmptyBorder());
+                    flightName.setBorder(BorderFactory.createEmptyBorder());
+                    flightCompany.setBorder(BorderFactory.createEmptyBorder());
                 }
             });
 
