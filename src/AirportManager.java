@@ -49,10 +49,10 @@ public class AirportManager extends JFrame {
         this.setResizable(false);
         //getContentPane().setLayout(null);
 
-        JMenuBar menuBar = new JMenuBar();
+        /*JMenuBar menuBar = new JMenuBar();
         JMenu fileTab = new JMenu("File");
         menuBar.add(fileTab);
-        setJMenuBar(menuBar);
+        setJMenuBar(menuBar);*/
 
         String[] dayStrings = new String[31];
         String[] monthStrings = new String[12];
@@ -193,8 +193,8 @@ public class AirportManager extends JFrame {
             direction.setBounds(10, 285, 85, 25);
             flightName.setBounds(300, 40, 80, 25);
             flightCompany.setBounds(300, 115, 80, 25);
-            addFlight.setBounds(370, 330, 100, 40);
-            clear.setBounds(500, 330, 80, 40);
+            addFlight.setBounds(370, 350, 100, 40);
+            clear.setBounds(500, 350, 80, 40);
 
             add(yearOptions);
             add(monthOptions);
