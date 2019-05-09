@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.JButton;
 
 
 public class AirportManager extends JFrame {
@@ -85,6 +86,10 @@ public class AirportManager extends JFrame {
         JComboBox dayOptions;
         JComboBox hourOptions;
         JComboBox minuteOptions;
+        JTextField setLocation;
+        JComboBox direction;
+        JTextField flightName;
+        JTextField flightCompany;
         AirportPanel() {
             setLayout(null);
             LocalDate currentDate = LocalDate.now();
@@ -92,6 +97,7 @@ public class AirportManager extends JFrame {
 
             String[] yearStrings = {"-", Integer.toString(year), Integer.toString(year+1)};
             String[] monthStrings = new String[13];
+            String[] directionStrings = {"Arriving", "Departing"};
             monthStrings[0] = "-";
             for (int i = 1; i < 13; i++) {
                 monthStrings[i] = Integer.toString(i);
@@ -102,24 +108,56 @@ public class AirportManager extends JFrame {
                 dayStrings[i] = Integer.toString(i);
             }
             String[] hourStrings = new String[25];
+            hourStrings[0] = "-";
+            for (int i = 0; i < 24; i++) {
+                if (i < 10) {
+                    hourStrings[i+1] = "0" + Integer.toString(i);
+                } else {
+                    hourStrings[i+1] = Integer.toString(i);
+                }
+            }
+            String[] minuteStrings = new String[61];
+            minuteStrings[0] = "-";
+            for (int i = 0; i < 60; i++) {
+                if (i < 10) {
+                    minuteStrings[i+1] = "0" + Integer.toString(i);
+                } else {
+                    minuteStrings[i+1] = Integer.toString(i);
+                }
+            }
 
             dayOptions = new JComboBox(dayStrings);
             monthOptions = new JComboBox(monthStrings);
             monthOptions.addActionListener(this);
             yearOptions = new JComboBox(yearStrings);
             yearOptions.addActionListener(this);
+            hourOptions = new JComboBox(hourStrings);
+            minuteOptions = new JComboBox(minuteStrings);
+            direction  = new JComboBox(directionStrings);
 
-            JTextField setLocation = new JTextField();
+            setLocation = new JTextField();
+            flightName = new JTextField();
+            flightCompany = new JTextField();
 
             yearOptions.setBounds(10,60,55,25);
             monthOptions.setBounds(85, 60, 40, 25);
             dayOptions.setBounds(150,60,40,25);
-            //setLocation.setBounds(10, 120, 80, 25);
+            hourOptions.setBounds(10, 150, 40, 25);
+            minuteOptions.setBounds(75, 150, 40, 25);
+            setLocation.setBounds(10, 220, 80, 25);
+            direction.setBounds(10, 285, 85, 25);
+            flightName.setBounds(300, 40, 80, 25);
+            flightCompany.setBounds(300, 115, 80, 25);
 
             add(yearOptions);
             add(monthOptions);
             add(dayOptions);
-            //add(setLocation);
+            add(hourOptions);
+            add(minuteOptions);
+            add(setLocation);
+            add(direction);
+            add(flightName);
+            add(flightCompany);
         }
 
         @Override
@@ -186,11 +224,16 @@ public class AirportManager extends JFrame {
             g.setFont(new Font("Arial", Font.BOLD, 16));
             g.drawString("Date", 10 ,25 );
             g.drawString("Time", 10, 115);
-            //g.drawString("Location", 10, 110);
+            g.drawString("Location", 10, 210);
+            g.drawString("Arrive/Depart", 10, 275);
+            g.drawString("Flight Name", 300, 25);
+            g.drawString("Flight Company", 300, 100);
             g.setFont(new Font("Arial", Font.PLAIN, 14));
             g.drawString("Year",10,50);
             g.drawString("Month",85, 50);
             g.drawString("Day", 150, 50);
+            g.drawString("Hour", 10, 140);
+            g.drawString("Minute", 75, 140);
         }
     }
 
