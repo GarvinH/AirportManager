@@ -139,9 +139,11 @@ public class Flight implements Comparable<Flight>, java.io.Serializable {
                                 timeA = Integer.parseInt(name.substring(2));
                                 timeB = Integer.parseInt(other.getName().substring(2));
                                 return timeA - timeB;
+                            } else {
+                                return compare;
                             }
                         } else {
-                            return compare;
+                            return timeA-timeB;
                         }
                     } else {
                         return timeA - timeB;

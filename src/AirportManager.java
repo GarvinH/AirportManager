@@ -24,9 +24,9 @@ public class AirportManager extends JFrame {
         arrivals.add(new Flight("SA1", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
         arrivals.add(new Flight("AC2", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
         departures.add(new Flight("CA3", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1600", "Delayed"));
         arrivals.displayInOrder();
-        System.out.println(removeFlight("SA2"));
+       // System.out.println(removeFlight("CA3"));
         departures.displayInOrder();
        // saveFile();
         //loadFile();
@@ -34,8 +34,8 @@ public class AirportManager extends JFrame {
         System.out.println(test.pop().getName());
         System.out.println(test.pop());
         test = departures.saveTree();
-        System.out.println(test.pop().getName());
-        System.out.println(test.pop().getName());
+        System.out.println(test.pop());
+        System.out.println(test.pop());
     }
 
     /**
@@ -164,6 +164,29 @@ public class AirportManager extends JFrame {
     }
 
     /**
+     * Changes a flight's arrival/departure time
+     * @param flight Name of the flight
+     * @param date Date to be changed to
+     * @return boolean value if flight is valid
+     */
+    public static boolean changeFlightDate(String flight, String date) {
+        Stack<Flight> arrivalStack = arrivals.saveTree();
+        Stack<Flight> departStack = departures.saveTree();
+        Flight tempFlight;
+        do {
+            tempFlight = arrivalStack.pop();
+            if ((tempFlight == null) || (!tempFlight.getName().equalsIgnoreCase(flight))) {
+                tempFlight = departStack.pop();
+            }
+        } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
+        if (tempFlight != null) {
+            tempFlight.setDate(date);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Removes a flight from the database
      * @param flight The flight name
      * @return Boolean value indicating success or failure
@@ -181,7 +204,7 @@ public class AirportManager extends JFrame {
             return true;
         } else {
             do {
-                tempFlight = arrivalStack.pop();
+                tempFlight = departStack.pop();
             } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
         }
 
@@ -192,6 +215,7 @@ public class AirportManager extends JFrame {
 
         return false;
     }
+
 
     private class AirportPanel extends JPanel {
 
