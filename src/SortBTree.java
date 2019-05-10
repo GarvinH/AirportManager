@@ -347,9 +347,10 @@ public class SortBTree<E extends Comparable<E>> {
         if (node == null){
             return;
         } else {
-            traverse(node.getLeft()); // put in the smallest node first
+
+            traverse(node.getRight()); // put in the greatest node first
             itemStack.push((E)node.getItem()); // put in current node
-            traverse(node.getRight()); // put in greatest node last
+            traverse(node.getLeft()); // put in smallest node last
 
 
         }
