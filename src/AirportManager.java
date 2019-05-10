@@ -26,8 +26,24 @@ public class AirportManager extends JFrame {
     static SortBTree arrivals, departures;
 
     public static void main(String[] args) {
+        arrivals = new SortBTree<>();
+        departures = new SortBTree<>();
+        /*arrivals.add(new Flight("SA1", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        arrivals.add(new Flight("AC2", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        departures.add(new Flight("CA3", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1600", "Delayed"));
+        arrivals.displayInOrder();
+        System.out.println(removeFlight("SA2"));
+        departures.displayInOrder();
+        // saveFile();
+        //loadFile();
+        Stack<Flight> test = arrivals.saveTree();
+        System.out.println(test.pop().getName());
+        System.out.println(test.pop());
+        test = departures.saveTree();
+        System.out.println(test.pop().getName());
+        System.out.println(test.pop().getName());*/
         window = new AirportManager();
-        SortBTree<Flight> flights = new SortBTree<>();
     }
 
     AirportManager() {
@@ -84,9 +100,7 @@ public class AirportManager extends JFrame {
     private class AirportTabs extends JTabbedPane {
         AirportTabs() {
             addTab("Add a Flight", flightEditor);
-            setMnemonicAt(0, KeyEvent.VK_1);
             addTab("Remove a Flight", new JPanel());
-            setMnemonicAt(1,KeyEvent.VK_2);
         }
     }
 
@@ -100,6 +114,7 @@ public class AirportManager extends JFrame {
         JComboBox direction;
         JTextField flightName;
         JTextField flightCompany;
+        JComboBox status;
         AirportPanel() {
             setLayout(null);
             LocalDate currentDate = LocalDate.now();
@@ -108,6 +123,7 @@ public class AirportManager extends JFrame {
             String[] yearStrings = {"-", Integer.toString(year), Integer.toString(year+1)};
             String[] monthStrings = new String[13];
             String[] directionStrings = {"-","Arriving", "Departing"};
+            String[] statusStrings = {"-", "On Time", "Delayed", "Cancelled"};
             monthStrings[0] = "-";
             for (int i = 1; i < 13; i++) {
                 monthStrings[i] = Integer.toString(i);
@@ -142,6 +158,7 @@ public class AirportManager extends JFrame {
             hourOptions = new JComboBox(hourStrings);
             minuteOptions = new JComboBox(minuteStrings);
             direction  = new JComboBox(directionStrings);
+            status = new JComboBox(statusStrings);
             JButton addFlight = new JButton("Add Flight");
             JButton clear = new JButton("Clear");
 
@@ -151,42 +168,67 @@ public class AirportManager extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     boolean add = true;
-                    if (!yearOptions.getSelectedItem().equals("-")) {
-                        if (!monthOptions.getSelectedItem().equals("-")) {
-                            if (!dayOptions.getSelectedItem().equals("-")) {
-                                if (!hourOptions.getSelectedItem().equals("-")) {
-                                    if (!minuteOptions.getSelectedItem().equals("-")) {
-                                        if (!setLocation.getText().equals("")) {
-                                            if (!direction.getSelectedItem().equals("-")) {
-                                                if (!flightName.getText().equals("")) {
-                                                    if (!flightCompany.getText().equals("")) {
-
-                                                    } else {
-                                                        flightCompany.setBorder(BorderFactory.createLineBorder(Color.RED));
-                                                    }
-                                                } else {
-                                                    flightName.setBorder(BorderFactory.createLineBorder(Color.RED));
-                                                }
-                                            } else {
-                                                setLocation.setBorder(BorderFactory.createLineBorder(Color.RED));
-                                            }
-                                        } else {
-                                            setLocation.setBorder(BorderFactory.createLineBorder(Color.RED));
-                                        }
-                                    } else {
-                                        minuteOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
-                                    }
-                                } else {
-                                    hourOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
-                                }
-                            } else {
-                                dayOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
-                            }
-                        } else {
-                            monthOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
-                        }
-                    } else {
+                    if (yearOptions.getSelectedItem().equals("-")) {
                         yearOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        add = false;
+                    } else {
+                        yearOptions.setBorder(BorderFactory.createEmptyBorder());
+                    }
+                    if (monthOptions.getSelectedItem().equals("-")) {
+                        monthOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        add = false;
+                    } else {
+                        monthOptions.setBorder(BorderFactory.createEmptyBorder());
+                    }
+                    if (dayOptions.getSelectedItem().equals("-")) {
+                        dayOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        add = false;
+                    } else {
+                        dayOptions.setBorder(BorderFactory.createEmptyBorder());
+                    }
+                    if (hourOptions.getSelectedItem().equals("-")) {
+                        hourOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        add = false;
+                    } else {
+                        hourOptions.setBorder(BorderFactory.createEmptyBorder());
+                    }
+                    if (minuteOptions.getSelectedItem().equals("-")) {
+                        minuteOptions.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        add = false;
+                    } else {
+                        minuteOptions.setBorder(BorderFactory.createEmptyBorder());
+                    }
+                    if (setLocation.getText().equals("")) {
+                        setLocation.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        add = false;
+                    } else {
+                        setLocation.setBorder(BorderFactory.createEmptyBorder());
+                    }
+                    if (direction.getSelectedItem().equals("-")) {
+                        direction.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        add = false;
+                    } else {
+                        direction.setBorder(BorderFactory.createEmptyBorder());
+                    }
+                    if (flightName.getText().equals("")) {
+                        flightName.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        add = false;
+                    } else {
+                        flightName.setBorder(BorderFactory.createEmptyBorder());
+                    }
+                    if (flightCompany.getText().equals("")) {
+                        flightCompany.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        add = false;
+                    } else {
+                        flightCompany.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                    }
+
+                    if (add) {
+                        if (direction.getSelectedItem().equals("Arriving")) {
+
+                        } else {
+
+                        }
                     }
                 }
             });
@@ -210,7 +252,7 @@ public class AirportManager extends JFrame {
                     setLocation.setBorder(BorderFactory.createEmptyBorder());
                     direction.setBorder(BorderFactory.createEmptyBorder());
                     flightName.setBorder(BorderFactory.createEmptyBorder());
-                    flightCompany.setBorder(BorderFactory.createEmptyBorder());
+                    flightCompany.setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 }
             });
 
@@ -219,14 +261,15 @@ public class AirportManager extends JFrame {
             flightCompany = new JTextField();
 
             yearOptions.setBounds(10,60,55,25);
-            monthOptions.setBounds(85, 60, 40, 25);
-            dayOptions.setBounds(150,60,40,25);
-            hourOptions.setBounds(10, 150, 40, 25);
-            minuteOptions.setBounds(75, 150, 40, 25);
+            monthOptions.setBounds(85, 60, 45, 25);
+            dayOptions.setBounds(150,60,45,25);
+            hourOptions.setBounds(10, 150, 45, 25);
+            minuteOptions.setBounds(75, 150, 45, 25);
             setLocation.setBounds(10, 220, 80, 25);
             direction.setBounds(10, 285, 85, 25);
             flightName.setBounds(300, 40, 80, 25);
             flightCompany.setBounds(300, 115, 80, 25);
+            status.setBounds(300, 185, 80, 25);
             addFlight.setBounds(370, 350, 100, 40);
             clear.setBounds(500, 350, 80, 40);
 
@@ -239,6 +282,7 @@ public class AirportManager extends JFrame {
             add(direction);
             add(flightName);
             add(flightCompany);
+            add(status);
             add(addFlight);
             add(clear);
         }
@@ -311,6 +355,7 @@ public class AirportManager extends JFrame {
             g.drawString("Arrive/Depart", 10, 275);
             g.drawString("Flight Name", 300, 25);
             g.drawString("Flight Company", 300, 100);
+            g.drawString("Status", 300, 170);
             g.setFont(new Font("Arial", Font.PLAIN, 14));
             g.drawString("Year",10,50);
             g.drawString("Month",85, 50);
@@ -442,6 +487,36 @@ public class AirportManager extends JFrame {
             tempFlight.setTime(time);
             return true;
         }
+        return false;
+    }
+
+    /**
+     * Removes a flight from the database
+     * @param flight The flight name
+     * @return Boolean value indicating success or failure
+     */
+    public static boolean removeFlight(String flight) {
+        Stack<Flight> arrivalStack = arrivals.saveTree();
+        Stack<Flight> departStack = departures.saveTree();
+        Flight tempFlight;
+        do {
+            tempFlight = arrivalStack.pop();
+        } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
+
+        if (tempFlight != null) {
+            arrivals.remove(tempFlight);
+            return true;
+        } else {
+            do {
+                tempFlight = arrivalStack.pop();
+            } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
+        }
+
+        if (tempFlight != null) {
+            departures.remove(tempFlight);
+            return true;
+        }
+
         return false;
     }
 
