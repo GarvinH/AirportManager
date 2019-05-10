@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.xml.stream.Location;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class AirportManager extends JFrame {
         System.out.println(test.pop());
         test = departures.saveTree();
         System.out.println(test.pop().getName());
-        System.out.println(test.pop().getName());*/
+        System.out.println(test.pop().getName());**/
         window = new AirportManager();
     }
 
@@ -202,7 +203,7 @@ public class AirportManager extends JFrame {
                         setLocation.setBorder(BorderFactory.createLineBorder(Color.RED));
                         add = false;
                     } else {
-                        setLocation.setBorder(BorderFactory.createEmptyBorder());
+                        setLocation.setBorder(new JTextField().getBorder());
                     }
                     if (direction.getSelectedItem().equals("-")) {
                         direction.setBorder(BorderFactory.createLineBorder(Color.RED));
@@ -214,20 +215,28 @@ public class AirportManager extends JFrame {
                         flightName.setBorder(BorderFactory.createLineBorder(Color.RED));
                         add = false;
                     } else {
-                        flightName.setBorder(BorderFactory.createEmptyBorder());
+                        flightName.setBorder(new JTextField().getBorder());
                     }
                     if (flightCompany.getText().equals("")) {
                         flightCompany.setBorder(BorderFactory.createLineBorder(Color.RED));
                         add = false;
                     } else {
-                        flightCompany.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                        flightCompany.setBorder(new JTextField().getBorder());
+                    }
+                    if (status.getSelectedItem().equals("-")) {
+                        status.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        add = false;
+                    } else {
+                        status.setBorder(BorderFactory.createEmptyBorder());
                     }
 
                     if (add) {
                         if (direction.getSelectedItem().equals("Arriving")) {
-
+                            arrivals.add(new Flight(flightName.getText(), flightCompany.getText(), setLocation.getText(), yearOptions.getSelectedItem()+"/"+monthOptions.getSelectedItem()+"/"+dayOptions.getSelectedItem(), (String)hourOptions.getSelectedItem()+minuteOptions.getSelectedItem(), (String)status.getSelectedItem()));
+                            clearInputs();
                         } else {
-
+                            departures.add(new Flight(flightName.getText(), flightCompany.getText(), setLocation.getText(), yearOptions.getSelectedItem()+"/"+monthOptions.getSelectedItem()+"/"+dayOptions.getSelectedItem(), (String)hourOptions.getSelectedItem()+minuteOptions.getSelectedItem(), (String)status.getSelectedItem()));
+                            //clearInputs();
                         }
                     }
                 }
@@ -235,24 +244,10 @@ public class AirportManager extends JFrame {
             clear.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    yearOptions.setSelectedIndex(0);
-                    monthOptions.setSelectedIndex(0);
-                    dayOptions.setSelectedIndex(0);
-                    hourOptions.setSelectedIndex(0);
-                    minuteOptions.setSelectedIndex(0);
-                    setLocation.setText("");
-                    direction.setSelectedIndex(0);
-                    flightName.setText("");
-                    flightCompany.setText("");
-                    yearOptions.setBorder(BorderFactory.createEmptyBorder());
-                    monthOptions.setBorder(BorderFactory.createEmptyBorder());
-                    dayOptions.setBorder(BorderFactory.createEmptyBorder());
-                    hourOptions.setBorder(BorderFactory.createEmptyBorder());
-                    minuteOptions.setBorder(BorderFactory.createEmptyBorder());
-                    setLocation.setBorder(BorderFactory.createEmptyBorder());
-                    direction.setBorder(BorderFactory.createEmptyBorder());
-                    flightName.setBorder(BorderFactory.createEmptyBorder());
-                    flightCompany.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                    clearInputs();
+                    Stack<Flight> test = departures.saveTree();
+                    departures.displayInOrder();
+                    System.out.println(test.pop().getName());
                 }
             });
 
@@ -269,7 +264,7 @@ public class AirportManager extends JFrame {
             direction.setBounds(10, 285, 85, 25);
             flightName.setBounds(300, 40, 80, 25);
             flightCompany.setBounds(300, 115, 80, 25);
-            status.setBounds(300, 185, 80, 25);
+            status.setBounds(300, 185, 90, 25);
             addFlight.setBounds(370, 350, 100, 40);
             clear.setBounds(500, 350, 80, 40);
 
@@ -362,6 +357,27 @@ public class AirportManager extends JFrame {
             g.drawString("Day", 150, 50);
             g.drawString("Hour", 10, 140);
             g.drawString("Minute", 75, 140);
+        }
+
+        public void clearInputs() {
+            yearOptions.setSelectedIndex(0);
+            monthOptions.setSelectedIndex(0);
+            dayOptions.setSelectedIndex(0);
+            hourOptions.setSelectedIndex(0);
+            minuteOptions.setSelectedIndex(0);
+            setLocation.setText("");
+            direction.setSelectedIndex(0);
+            flightName.setText("");
+            flightCompany.setText("");
+            yearOptions.setBorder(BorderFactory.createEmptyBorder());
+            monthOptions.setBorder(BorderFactory.createEmptyBorder());
+            dayOptions.setBorder(BorderFactory.createEmptyBorder());
+            hourOptions.setBorder(BorderFactory.createEmptyBorder());
+            minuteOptions.setBorder(BorderFactory.createEmptyBorder());
+            setLocation.setBorder(new JTextField().getBorder());
+            direction.setBorder(BorderFactory.createEmptyBorder());
+            flightName.setBorder(new JTextField().getBorder());
+            flightCompany.setBorder(new JTextField().getBorder());
         }
     }
 
@@ -526,6 +542,7 @@ public class AirportManager extends JFrame {
             JTextArea test = new JTextArea(100,100);
 
             JScrollPane scrollFrame = new JScrollPane(test);
+            scrollFrame.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             scrollFrame.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             scrollFrame.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             this.setAutoscrolls(true);
