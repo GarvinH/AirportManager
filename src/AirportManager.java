@@ -547,7 +547,7 @@ public class AirportManager extends JFrame {
 
     }
 
-
+    /** --------- INNER CLASSES ------------- **/
     private class testScroll extends JScrollPane {
         testScroll() {
             JTextArea test = new JTextArea(100,100);

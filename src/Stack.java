@@ -30,6 +30,7 @@ public class Stack<E> {
     }
 
 }
+/** --------- INNER CLASS FOR NODE ------------- **/
 
 /*
  * [StNode.java]

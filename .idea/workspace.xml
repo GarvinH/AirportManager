@@ -28,9 +28,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Stack.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="653">
-              <caret line="75" column="3" selection-start-line="75" selection-start-column="3" selection-end-line="75" selection-end-column="3" />
+            <state relative-caret-position="425">
+              <caret line="32" selection-start-line="32" selection-end-line="32" selection-end-column="52" />
               <folding>
+                <element signature="e#1340#1341#0" expanded="true" />
                 <element signature="e#1372#1373#0" expanded="true" />
               </folding>
             </state>
@@ -49,8 +50,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/AirportManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="81">
-              <caret line="557" column="66" selection-start-line="557" selection-start-column="66" selection-end-line="557" selection-end-column="66" />
+            <state relative-caret-position="578">
+              <caret line="52" column="22" lean-forward="true" selection-start-line="52" selection-start-column="22" selection-end-line="52" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -84,10 +85,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/TreeTest.java" />
-        <option value="$PROJECT_DIR$/src/Stack.java" />
         <option value="$PROJECT_DIR$/src/SortBTreeNode.java" />
         <option value="$PROJECT_DIR$/src/Flight.java" />
         <option value="$PROJECT_DIR$/src/SortBTree.java" />
+        <option value="$PROJECT_DIR$/src/Stack.java" />
         <option value="$PROJECT_DIR$/src/AirportManager.java" />
       </list>
     </option>
@@ -110,11 +111,6 @@
             <path>
               <item name="AirportManager" type="b2602c69:ProjectViewProjectNode" />
               <item name="AirportManager" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AirportManager" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AirportManager" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -186,9 +182,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18869936" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18869936" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -198,14 +193,14 @@
       <window_info id="Favorites" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49546143" weight="0.20458265" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49546143" weight="0.20368364" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3997833" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.4976452" weight="0.3305648" />
       <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.4977307" weight="0.3535188" />
       <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49924356" weight="0.32405892" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5045386" side_tool="true" visible="true" weight="0.20368364" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5045386" side_tool="true" weight="0.20368364" />
       <window_info anchor="bottom" id="Messages" order="10" sideWeight="0.49924356" weight="0.3289689" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -290,29 +285,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/SortBTreeNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="30" column="25" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Stack.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="653">
-          <caret line="75" column="3" selection-start-line="75" selection-start-column="3" selection-end-line="75" selection-end-column="3" />
-          <folding>
-            <element signature="e#1372#1373#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/SortBTree.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="483">
           <caret line="369" column="26" selection-start-line="369" selection-start-column="26" selection-end-line="369" selection-end-column="26" />
           <folding>
             <element signature="e#0#12434#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Stack.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="32" selection-start-line="32" selection-end-line="32" selection-end-column="52" />
+          <folding>
+            <element signature="e#1340#1341#0" expanded="true" />
+            <element signature="e#1372#1373#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -324,10 +313,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/SortBTreeNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="30" column="25" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/AirportManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="81">
-          <caret line="557" column="66" selection-start-line="557" selection-start-column="66" selection-end-line="557" selection-end-column="66" />
+        <state relative-caret-position="578">
+          <caret line="52" column="22" lean-forward="true" selection-start-line="52" selection-start-column="22" selection-end-line="52" selection-end-column="22" />
         </state>
       </provider>
     </entry>
