@@ -349,9 +349,9 @@ public class SortBTree<E extends Comparable<E>> {
      * @author Albert Quon
      * @return Stack with sorted items
      */
-    public Stack saveTree(){
+    public Stack saveTreeStack(){
         itemStack = new Stack<E>();
-        traverse(root);
+        traverseStack(root);
         return this.itemStack;
     }
 
@@ -360,14 +360,14 @@ public class SortBTree<E extends Comparable<E>> {
      * @param node Current node
      * @author Albert Quon
      */
-    private void traverse(SortBTreeNode node){
+    private void traverseStack(SortBTreeNode node){
         if (node == null){
             return;
         } else {
 
-            traverse(node.getRight()); // put in the greatest node first
+            traverseStack(node.getRight()); // put in the greatest node first
             itemStack.push((E)node.getItem()); // put in current node
-            traverse(node.getLeft()); // put in smallest node last
+            traverseStack(node.getLeft()); // put in smallest node last
 
 
         }

@@ -39,10 +39,10 @@ public class AirportManager extends JFrame {
         //departures.displayInOrder();
         // saveFile();
         //loadFile();
-        Stack<Flight> test = arrivals.saveTree();
+        Stack<Flight> test = arrivals.saveTreeStack();
         //System.out.println(test.pop().getName());
         //System.out.println(test.pop());
-        test = departures.saveTree();
+        test = departures.saveTreeStack();
         //System.out.println(test.pop().getName());
         //System.out.println(test.pop().getName());
         window = new AirportManager();
@@ -249,7 +249,7 @@ public class AirportManager extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     clearInputs();
-                    Stack<Flight> test = departures.saveTree();
+                    Stack<Flight> test = departures.saveTreeStack();
                     departures.displayInOrder();
                     System.out.println(test.pop().getName());
                 }
@@ -437,7 +437,7 @@ public class AirportManager extends JFrame {
 
             //save arrivals
             ObjectOutputStream output = new ObjectOutputStream(arriveFile);
-            Stack<Flight> arriveList = arrivals.saveTree();
+            Stack<Flight> arriveList = arrivals.saveTreeStack();
             size = arrivals.size(); // save the size of the tree to indicate end of file
             output.writeObject(size);
             for(int i = 0; i < size; i++) {
@@ -449,7 +449,7 @@ public class AirportManager extends JFrame {
 
             // save departures
             output = new ObjectOutputStream(departFile);
-            Stack<Flight> departList = departures.saveTree();
+            Stack<Flight> departList = departures.saveTreeStack();
             size = departures.size(); // save the size of the tree to indicate end of file
             output.writeObject(size);
             for(int i = 0; i < size; i++) {
@@ -470,8 +470,8 @@ public class AirportManager extends JFrame {
      * @return boolean value if flight is valid
      */
     public static boolean changeFlightStatus(String flight, String status) {
-        Stack<Flight> arrivalStack = arrivals.saveTree();
-        Stack<Flight> departStack = departures.saveTree();
+        Stack<Flight> arrivalStack = arrivals.saveTreeStack();
+        Stack<Flight> departStack = departures.saveTreeStack();
         Flight tempFlight;
         do {
             tempFlight = arrivalStack.pop();
@@ -494,8 +494,8 @@ public class AirportManager extends JFrame {
      * @return boolean value if flight is valid
      */
     public static boolean changeFlightTime(String flight, String time) {
-        Stack<Flight> arrivalStack = arrivals.saveTree();
-        Stack<Flight> departStack = departures.saveTree();
+        Stack<Flight> arrivalStack = arrivals.saveTreeStack();
+        Stack<Flight> departStack = departures.saveTreeStack();
         Flight tempFlight;
         do {
             tempFlight = arrivalStack.pop();
@@ -516,8 +516,8 @@ public class AirportManager extends JFrame {
      * @return Boolean value indicating success or failure
      */
     public static boolean removeFlight(String flight) {
-        Stack<Flight> arrivalStack = arrivals.saveTree();
-        Stack<Flight> departStack = departures.saveTree();
+        Stack<Flight> arrivalStack = arrivals.saveTreeStack();
+        Stack<Flight> departStack = departures.saveTreeStack();
         Flight tempFlight;
         do {
             tempFlight = arrivalStack.pop();
@@ -528,7 +528,7 @@ public class AirportManager extends JFrame {
             return true;
         } else {
             do {
-                tempFlight = arrivalStack.pop();
+                tempFlight = departStack.pop();
             } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
         }
 
@@ -541,8 +541,8 @@ public class AirportManager extends JFrame {
     }
 
     public static void refreshFlights(){
-        Stack<Flight> arrivalStack = arrivals.saveTree();
-        Stack<Flight> departStack = departures.saveTree();
+        Stack<Flight> arrivalStack = arrivals.saveTreeStack();
+        Stack<Flight> departStack = departures.saveTreeStack();
         String currentTime;
 
     }
