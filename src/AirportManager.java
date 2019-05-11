@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
+import java.util.ArrayList;
+
 
 public class AirportManager extends JFrame {
     static JFrame window;
@@ -81,7 +83,7 @@ public class AirportManager extends JFrame {
 
         //JTabbedPane flightTabs = new JTabbedPane();
 
-        flightEditor = new AirportPanel();
+        flightEditor = new AddPanel();
         flightEditor.setBounds(0,0,getWidth(),getHeight());
         //flightTabs.addTab("Add a Flight", flightEditor);
         //flightTabs.setMnemonicAt(0, KeyEvent.VK_1);
@@ -101,11 +103,58 @@ public class AirportManager extends JFrame {
     private class AirportTabs extends JTabbedPane {
         AirportTabs() {
             addTab("Add a Flight", flightEditor);
-            addTab("Remove a Flight", new JPanel());
+            addTab("Remove a Flight", new EditPanel());
         }
     }
 
-    private class AirportPanel extends JPanel implements ActionListener {
+    private class EditPanel extends JPanel {
+        JScrollPane arrivalPane;
+        JScrollPane departPane;
+        JList arriveList;
+        JList departList;
+        int arriveSize;
+        int departSize;
+        EditPanel() {
+            setLayout(null);
+            ArrayList<String> arriveNames = new ArrayList<String>();
+            ArrayList<String> departNames = new ArrayList<String>();
+            Stack<Flight> readIn = arrivals.saveTree();
+            Flight tempFlight = readIn.pop();
+            while (tempFlight != null) {
+                arriveNames.add(tempFlight.getName());
+                tempFlight = readIn.pop();
+            }
+            readIn = departures.saveTree();
+            tempFlight = readIn.pop();
+            while (tempFlight != null) {
+                departNames.add(tempFlight.getName());
+                tempFlight = readIn.pop();
+            }
+
+            arrivalPane = new JScrollPane();
+            arriveList = new JList(arriveNames.toArray());
+            arrivalPane.setViewportView(arriveList);
+            departPane = new JScrollPane();
+            departList = new JList(departNames.toArray());
+            departPane.setViewportView(departList);
+
+            arrivalPane.setBounds(10, 30, 80, 80);
+            departPane.setBounds(10,150,80,80);
+
+            add(arrivalPane);
+            add(departPane);
+        }
+
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            this.setDoubleBuffered(true);
+            repaint();
+        }
+
+
+    }
+
+    private class AddPanel extends JPanel implements ActionListener {
         JComboBox yearOptions;
         JComboBox monthOptions;
         JComboBox dayOptions;
@@ -116,7 +165,7 @@ public class AirportManager extends JFrame {
         JTextField flightName;
         JTextField flightCompany;
         JComboBox status;
-        AirportPanel() {
+        AddPanel() {
             setLayout(null);
             LocalDate currentDate = LocalDate.now();
             int year = currentDate.getYear();
@@ -245,9 +294,6 @@ public class AirportManager extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     clearInputs();
-                    Stack<Flight> test = departures.saveTree();
-                    departures.displayInOrder();
-                    System.out.println(test.pop().getName());
                 }
             });
 
