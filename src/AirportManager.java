@@ -29,10 +29,11 @@ public class AirportManager extends JFrame {
     public static void main(String[] args) {
         arrivals = new SortBTree<>();
         departures = new SortBTree<>();
-        arrivals.add(new Flight("SA1", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        arrivals.add(new Flight("AC2", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        departures.add(new Flight("CA3", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1600", "Delayed"));
+
+        arrivals.add(new Flight("SA1", "Air Canada", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        arrivals.add(new Flight("AC2", "British Airways", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        departures.add(new Flight("CA3", "WestJet", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        departures.add(new Flight("ZA4", "United Airlines", "San Francisco", "2019/04/04", "1600", "Delayed"));
         //arrivals.displayInOrder();
         System.out.println(removeFlight("SA2"));
         //departures.displayInOrder();
@@ -45,6 +46,8 @@ public class AirportManager extends JFrame {
         //System.out.println(test.pop().getName());
         //System.out.println(test.pop().getName());
         window = new AirportManager();
+
+
     }
 
     AirportManager() {
@@ -81,7 +84,7 @@ public class AirportManager extends JFrame {
 
         //JTabbedPane flightTabs = new JTabbedPane();
 
-        flightEditor = new AirportPanel();
+        flightEditor = new AddPanel();
         flightEditor.setBounds(0,0,getWidth(),getHeight());
         //flightTabs.addTab("Add a Flight", flightEditor);
         //flightTabs.setMnemonicAt(0, KeyEvent.VK_1);
@@ -92,7 +95,7 @@ public class AirportManager extends JFrame {
         //add(dateHolder);
         //add(monthHolder);
 
-        //this.add(new JScrollPane(new JTextField("Hello Wolrd \nt\nt\nt\nt\nt\nt\nt\nt\nt\ntt\nt\nt\nasdlkfjapjjgaporiaigp")));
+        //this.add(new JScrollPane(new JTextField("Hello Word \nt\nt\nt\nt\nt\nt\nt\nt\nt\ntt\nt\nt\nasdlkfjapjjgaporiaigp")));
         //use jlist
 
         this.setVisible(true);
@@ -105,7 +108,7 @@ public class AirportManager extends JFrame {
         }
     }
 
-    private class AirportPanel extends JPanel implements ActionListener {
+    private class AddPanel extends JPanel implements ActionListener {
         JComboBox yearOptions;
         JComboBox monthOptions;
         JComboBox dayOptions;
@@ -116,10 +119,11 @@ public class AirportManager extends JFrame {
         JTextField flightName;
         JTextField flightCompany;
         JComboBox status;
-        AirportPanel() {
+        AddPanel() {
             setLayout(null);
             LocalDate currentDate = LocalDate.now();
             int year = currentDate.getYear();
+
 
             String[] yearStrings = {"-", Integer.toString(year), Integer.toString(year+1)};
             String[] monthStrings = new String[13];
@@ -534,6 +538,13 @@ public class AirportManager extends JFrame {
         }
 
         return false;
+    }
+
+    public static void refreshFlights(){
+        Stack<Flight> arrivalStack = arrivals.saveTree();
+        Stack<Flight> departStack = departures.saveTree();
+        String currentTime;
+
     }
 
 

@@ -1,7 +1,7 @@
 /*
  * [SortBTree.java]
  * Sorted Binary Tree, which is self-balanced as an AVL tree
- * Albert Quon
+ * Albert Quon @ Garvin Hui
  * 2019/05/06
  */
 
@@ -12,6 +12,7 @@ public class SortBTree<E extends Comparable<E>> {
     /**
      * Finds if an object exists within the tree
      * @param item Item that is to be found
+     * @author Albert Quon
      * @return boolean value if item is found or not
      */
     public boolean contains(E item){
@@ -27,6 +28,7 @@ public class SortBTree<E extends Comparable<E>> {
      * Recursive helper to traverse the tree
      * @param node Current node
      * @param item Item for comparison
+     * @author Albert Quon
      * @return boolean value if item is found or not
      */
     private boolean containHelper(SortBTreeNode node, E item){
@@ -67,7 +69,8 @@ public class SortBTree<E extends Comparable<E>> {
 
     /**
      * Insertion method
-     * @param item
+     * @param item Item to be added
+     * @author Albert Quon
      */
     public void add(E item){
         root = addHelper(root, item); // tree can change when adding
@@ -77,6 +80,7 @@ public class SortBTree<E extends Comparable<E>> {
      * Recursive helper for insertion
      * @param node Current node
      * @param item Item to be compared to other nodes with
+     * @author Albert Quon
      * @return A node that is balanced
      */
     private SortBTreeNode addHelper(SortBTreeNode node, E item){
@@ -130,6 +134,7 @@ public class SortBTree<E extends Comparable<E>> {
      * Recursively loops through the tree to find the item, then balances the tree once found
      * @param node Current node
      * @param item Item to be removed
+     * @author Albert Quon
      * @return Balanced node
      */
     private SortBTreeNode removeHelper(SortBTreeNode node, E item){
@@ -193,6 +198,7 @@ public class SortBTree<E extends Comparable<E>> {
     /**
      * Finds the smallest node given a starting node
      * @param node Current node
+     * @author Albert Quon
      * @return Leftmost node from the starting node
      */
     private SortBTreeNode smallestNode(SortBTreeNode node){
@@ -205,6 +211,7 @@ public class SortBTree<E extends Comparable<E>> {
 
     /**
      * Determines if the tree is empty
+     * @author Albert Quon
      * @return boolean value that represents if tree is empty or not
      */
     public boolean isEmpty(){
@@ -216,6 +223,7 @@ public class SortBTree<E extends Comparable<E>> {
 
     /**
      * Outputs the tree's items in order
+     * @author Albert Quon
      */
     public void displayInOrder() {
         displayInOrderHelper(root);
@@ -223,6 +231,7 @@ public class SortBTree<E extends Comparable<E>> {
 
     /**
      * Recursively loops through the tree and outputs the tree's items in order
+     * @author Albert Quon
      */
     private void displayInOrderHelper(SortBTreeNode node) {
         if (node == null) {
@@ -236,6 +245,7 @@ public class SortBTree<E extends Comparable<E>> {
 
     /**
      * Outputs the items from the nodes of the tree
+     * @author Albert Quon
      */
     public void display(){
         if (root != null) {
@@ -248,6 +258,7 @@ public class SortBTree<E extends Comparable<E>> {
     /**
      * Recursively outputs the items of the nodes from the tree
      * @param node
+     * @author Albert Quon
      */
     private void displayHelper(SortBTreeNode node){
         if(node == null){
@@ -268,6 +279,7 @@ public class SortBTree<E extends Comparable<E>> {
     /**
      * Finds the height of the node and used in dealing with NullPointerException
      * @param node the node
+     * @author Albert Quon
      * @return the height of the node
      */
     private int nodeHeight(SortBTreeNode node) {
@@ -280,6 +292,7 @@ public class SortBTree<E extends Comparable<E>> {
     /**
      * Finds the balance factor of a node based on its children
      * @param node The balance factor of the node to be determined
+     * @author Albert Quon
      * @return integer value of the balance factor
      */
     private int balance(SortBTreeNode node) {
@@ -292,6 +305,7 @@ public class SortBTree<E extends Comparable<E>> {
     /**
      * Rotates nodes in a counterclockwise direction while maintaining order
      * @param node The root node that is used to reference its successors
+     * @author Albert Quon
      * @return The new root node
      */
     private SortBTreeNode leftRotate(SortBTreeNode node) {
@@ -312,6 +326,7 @@ public class SortBTree<E extends Comparable<E>> {
     /**
      * Rotates nodes in a clockwise direction while maintaining order
      * @param node The root node that is used to reference its successors
+     * @author Albert Quon
      * @return The new root node
      */
     private SortBTreeNode rightRotate(SortBTreeNode node) {
@@ -331,6 +346,7 @@ public class SortBTree<E extends Comparable<E>> {
 
     /**
      * Saves all of the tree's items and put into a stack
+     * @author Albert Quon
      * @return Stack with sorted items
      */
     public Stack saveTree(){
@@ -342,6 +358,7 @@ public class SortBTree<E extends Comparable<E>> {
     /**
      * Recursively goes through the tree and pushes the items into a stack in order
      * @param node Current node
+     * @author Albert Quon
      */
     private void traverse(SortBTreeNode node){
         if (node == null){
