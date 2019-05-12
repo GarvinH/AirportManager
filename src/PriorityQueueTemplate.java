@@ -1,36 +1,7 @@
-public class PriorityQueueTemplate {
-    public static void main(String[] args) {
-        PriorityQueue<String> test = new PriorityQueue<String>();
-        test.enqueue("test1", 1);
-        test.enqueue("test1.5",2);
-        test.enqueue("test2", 3);
-        test.enqueue("test3", 5);
-        test.enqueue("test4", 4);
-        test.enqueue("test5", 2);
-        test.enqueue("test6",5);
-        test.enqueue("test7",2);
-        System.out.println(test.isEmpty());
-        for (int i = 0; i < test.getSize(); i++) {
-            System.out.print(test.getItem(i) + " ");
-        }
-        System.out.println();
-        System.out.println(test.dequeue());
-        for (int i = 0; i < test.getSize(); i++) {
-            System.out.print(test.getItem(i) + " ");
-        }
-        System.out.println();
-        System.out.println(test.dequeue());
-        for (int i = 0; i < test.getSize(); i++) {
-            System.out.print(test.getItem(i) + " ");
-        }
-        System.out.println();
-        System.out.println(test.getItem(1));
-    }
-}
 
-class PriorityQueue<E> {
-    private Node<E> head;
-    private Node<E> tail;
+public class PriorityQueue<E> {
+    private PQNode<E> head;
+    private PQNode<E> tail;
 
     public boolean isEmpty() {
         if (head == null) {
@@ -41,10 +12,10 @@ class PriorityQueue<E> {
     }
 
     public void enqueue(E item, int priority) {
-        Node<E> tempNode = head;
+        PQNode<E> tempNode = head;
 
         if (head == null) {
-            head = new Node<E>(item, priority);
+            head = new PQNode<E>(item, priority);
             tail = head;
         } else {
             while((tempNode.getNext() != null) && (tempNode.compareTo(priority) < 1)) {
@@ -62,11 +33,11 @@ class PriorityQueue<E> {
                 tempNode = tempNode.getPrevious();
                 tempNode.setNext(new Node(item, priority, tempNode.getNext(), tempNode));
             } else*/ if (tempNode.compareTo(priority) <= 0) {
-                tempNode.setNext(new Node(item, priority, null, tempNode));
+                tempNode.setNext(new PQNode(item, priority, null, tempNode));
                 tail = tempNode.getNext();
             } else {
                 tempNode = tempNode.getPrevious();
-                tempNode.setNext(new Node(item, priority, tempNode.getNext(), tempNode));
+                tempNode.setNext(new PQNode(item, priority, tempNode.getNext(), tempNode));
                 tempNode.getNext().getNext().setPrevious(tempNode.getNext());
             }
         }
@@ -79,7 +50,7 @@ class PriorityQueue<E> {
     }
 
     public E getItem(int index) {
-        Node<E> tempNode = head;
+        PQNode<E> tempNode = head;
         int tempIndex = 0;
         if (head == null) {
             return null;
@@ -100,7 +71,7 @@ class PriorityQueue<E> {
         if (head == null) {
             return -1;
         }
-        Node<E> tempNode = head;
+        PQNode<E> tempNode = head;
         int index = 1;
         while(tempNode.getNext() != null) {
             tempNode = tempNode.getNext();
@@ -108,33 +79,29 @@ class PriorityQueue<E> {
         }
         return index;
     }
-
-    public E getTail() {
-        return tail.getItem();
-    }
 }
 
-class Node<T> implements Comparable<Integer> {
+class PQNode<T> implements Comparable<Integer> {
     private T item;
     private int priority;
-    private Node<T> next;
-    private Node<T> previous;
+    private PQNode<T> next;
+    private PQNode<T> previous;
 
-    public Node(T item, int priority) {
+    public PQNode(T item, int priority) {
         this.item = item;
         this.priority = priority;
         next = null;
         previous = null;
     }
 
-    public Node(T item, int priority, Node<T> next, Node<T> previous) {
+    public PQNode(T item, int priority, Node<T> next, Node<T> previous) {
         this.item = item;
         this.priority = priority;
         this.next = next;
         this.previous = previous;
     }
 
-    public Node<T> getNext() {
+    public PQNode<T> getNext() {
         return this.next;
     }
 
@@ -142,15 +109,15 @@ class Node<T> implements Comparable<Integer> {
         return priority;
     }
 
-    public Node<T> getPrevious() {
+    public PQNode<T> getPrevious() {
         return this.previous;
     }
 
-    public void setNext(Node<T> next) {
+    public void setNext(PQNode<T> next) {
         this.next = next;
     }
 
-    public void setPrevious(Node<T> previous) {
+    public void setPrevious(PQNode<T> previous) {
         this.previous = previous;
     }
 
