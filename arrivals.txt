@@ -1,2 +1,0 @@
-SA1,United,San Francisco,2019/04/04,1700,Delayed,
-AC2,United,San Francisco,2019/04/04,1700,Delayed,
