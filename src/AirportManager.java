@@ -160,6 +160,10 @@ public class AirportManager extends JFrame {
             add(departPane);
         }
 
+        /**
+         *
+         * @param g
+         */
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             this.setDoubleBuffered(true);
@@ -444,7 +448,7 @@ public class AirportManager extends JFrame {
 
   
     /**
-     * Loads up trees from a text file and stores the data into trees
+     * Loads up trees from a serialized file and stores the data into trees
      */
     public static void loadFile() {
         ObjectInputStream fileInput;
@@ -484,7 +488,7 @@ public class AirportManager extends JFrame {
     }
 
     /**
-     * Saves the current trees onto text files
+     * Saves the current trees on to serialized files
      */
     public static void saveFile(){
         Integer size;
@@ -531,6 +535,7 @@ public class AirportManager extends JFrame {
         Stack<Flight> arrivalStack = arrivals.saveTreeStack();
         Stack<Flight> departStack = departures.saveTreeStack();
         Flight tempFlight;
+        //search for the flight by name in both stacks
         do {
             tempFlight = arrivalStack.pop();
             if ((tempFlight == null) || (!tempFlight.getName().equalsIgnoreCase(flight))) {
@@ -538,6 +543,7 @@ public class AirportManager extends JFrame {
             }
         } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
 
+        //change the status
         if (tempFlight != null) {
             tempFlight.setStatus(status);
             return true;
@@ -546,7 +552,7 @@ public class AirportManager extends JFrame {
     }
 
     /**
-     * Removes a flight from the database
+     * Removes a flight from the tree
      * @param flight The flight name
      * @return Boolean value indicating success or failure
      */
@@ -561,7 +567,7 @@ public class AirportManager extends JFrame {
         if (tempFlight != null) {
             arrivals.remove(tempFlight);
             return true;
-        } else {
+        } else { // departures may have the flight
             do {
                 tempFlight = departStack.pop();
             } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));

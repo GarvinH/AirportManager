@@ -80,7 +80,7 @@ class StNode<E> {
 
     /**
      * Get the item associated with the node
-     * @return item
+     * @return item stored in node
      */
     public E getItem(){
         return this.item;
