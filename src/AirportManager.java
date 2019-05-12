@@ -4,23 +4,38 @@
  * 04/30/2019
  */
 
-import java.awt.*;
+//imports
+// java.awt
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
-import java.util.Arrays;
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.xml.stream.Location;
+// javax.swing
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+import javax.swing.BorderFactory;
+import javax.swing.JTabbedPane;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JTextArea;
+// java.io
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
-
+// java.util
 import java.util.ArrayList;
+import java.util.Arrays;
+
 
 
 public class AirportManager extends JFrame {
@@ -118,13 +133,13 @@ public class AirportManager extends JFrame {
             setLayout(null);
             ArrayList<String> arriveNames = new ArrayList<String>();
             ArrayList<String> departNames = new ArrayList<String>();
-            Stack<Flight> readIn = arrivals.saveTree();
+            Stack<Flight> readIn = arrivals.saveTreeStack();
             Flight tempFlight = readIn.pop();
             while (tempFlight != null) {
                 arriveNames.add(tempFlight.getName());
                 tempFlight = readIn.pop();
             }
-            readIn = departures.saveTree();
+            readIn = departures.saveTreeStack();
             tempFlight = readIn.pop();
             while (tempFlight != null) {
                 departNames.add(tempFlight.getName());
@@ -578,24 +593,5 @@ public class AirportManager extends JFrame {
 
     }
 
-    private class Button extends JButton{
-
-    }
-    private class MyKeyListener implements KeyListener {
-        @Override
-        public void keyPressed(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyTyped(KeyEvent e) {
-
-        }
-    }
 
 }
