@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
+import java.util.ArrayList;
+
 
 public class AirportManager extends JFrame {
     static JFrame window;
@@ -29,25 +31,22 @@ public class AirportManager extends JFrame {
     public static void main(String[] args) {
         arrivals = new SortBTree<>();
         departures = new SortBTree<>();
-
-        arrivals.add(new Flight("SA1", "Air Canada", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        arrivals.add(new Flight("AC2", "British Airways", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        departures.add(new Flight("CA3", "WestJet", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        departures.add(new Flight("ZA4", "United Airlines", "San Francisco", "2019/04/04", "1600", "Delayed"));
-        //arrivals.displayInOrder();
+        /*arrivals.add(new Flight("SA1", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        arrivals.add(new Flight("AC2", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        departures.add(new Flight("CA3", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1600", "Delayed"));
+        arrivals.displayInOrder();
         System.out.println(removeFlight("SA2"));
-        //departures.displayInOrder();
+        departures.displayInOrder();
         // saveFile();
         //loadFile();
-        Stack<Flight> test = arrivals.saveTreeStack();
-        //System.out.println(test.pop().getName());
-        //System.out.println(test.pop());
-        test = departures.saveTreeStack();
-        //System.out.println(test.pop().getName());
-        //System.out.println(test.pop().getName());
+        Stack<Flight> test = arrivals.saveTree();
+        System.out.println(test.pop().getName());
+        System.out.println(test.pop());
+        test = departures.saveTree();
+        System.out.println(test.pop().getName());
+        System.out.println(test.pop().getName());**/
         window = new AirportManager();
-
-
     }
 
     AirportManager() {
@@ -95,7 +94,7 @@ public class AirportManager extends JFrame {
         //add(dateHolder);
         //add(monthHolder);
 
-        //this.add(new JScrollPane(new JTextField("Hello Word \nt\nt\nt\nt\nt\nt\nt\nt\nt\ntt\nt\nt\nasdlkfjapjjgaporiaigp")));
+        //this.add(new JScrollPane(new JTextField("Hello Wolrd \nt\nt\nt\nt\nt\nt\nt\nt\nt\ntt\nt\nt\nasdlkfjapjjgaporiaigp")));
         //use jlist
 
         this.setVisible(true);
@@ -104,8 +103,55 @@ public class AirportManager extends JFrame {
     private class AirportTabs extends JTabbedPane {
         AirportTabs() {
             addTab("Add a Flight", flightEditor);
-            addTab("Remove a Flight", new JPanel());
+            addTab("Remove a Flight", new EditPanel());
         }
+    }
+
+    private class EditPanel extends JPanel {
+        JScrollPane arrivalPane;
+        JScrollPane departPane;
+        JList arriveList;
+        JList departList;
+        int arriveSize;
+        int departSize;
+        EditPanel() {
+            setLayout(null);
+            ArrayList<String> arriveNames = new ArrayList<String>();
+            ArrayList<String> departNames = new ArrayList<String>();
+            Stack<Flight> readIn = arrivals.saveTree();
+            Flight tempFlight = readIn.pop();
+            while (tempFlight != null) {
+                arriveNames.add(tempFlight.getName());
+                tempFlight = readIn.pop();
+            }
+            readIn = departures.saveTree();
+            tempFlight = readIn.pop();
+            while (tempFlight != null) {
+                departNames.add(tempFlight.getName());
+                tempFlight = readIn.pop();
+            }
+
+            arrivalPane = new JScrollPane();
+            arriveList = new JList(arriveNames.toArray());
+            arrivalPane.setViewportView(arriveList);
+            departPane = new JScrollPane();
+            departList = new JList(departNames.toArray());
+            departPane.setViewportView(departList);
+
+            arrivalPane.setBounds(10, 30, 80, 80);
+            departPane.setBounds(10,150,80,80);
+
+            add(arrivalPane);
+            add(departPane);
+        }
+
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            this.setDoubleBuffered(true);
+            repaint();
+        }
+
+
     }
 
     private class AddPanel extends JPanel implements ActionListener {
@@ -123,7 +169,6 @@ public class AirportManager extends JFrame {
             setLayout(null);
             LocalDate currentDate = LocalDate.now();
             int year = currentDate.getYear();
-
 
             String[] yearStrings = {"-", Integer.toString(year), Integer.toString(year+1)};
             String[] monthStrings = new String[13];
@@ -249,9 +294,6 @@ public class AirportManager extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     clearInputs();
-                    Stack<Flight> test = departures.saveTreeStack();
-                    departures.displayInOrder();
-                    System.out.println(test.pop().getName());
                 }
             });
 
@@ -385,6 +427,7 @@ public class AirportManager extends JFrame {
         }
     }
 
+  
     /**
      * Loads up trees from a text file and stores the data into trees
      */
@@ -517,14 +560,7 @@ public class AirportManager extends JFrame {
         return false;
     }
 
-    public static void refreshFlights(){
-        Stack<Flight> arrivalStack = arrivals.saveTreeStack();
-        Stack<Flight> departStack = departures.saveTreeStack();
-        String currentTime;
 
-    }
-
-    /** --------- INNER CLASSES ------------- **/
     private class testScroll extends JScrollPane {
         testScroll() {
             JTextArea test = new JTextArea(100,100);
@@ -542,5 +578,24 @@ public class AirportManager extends JFrame {
 
     }
 
+    private class Button extends JButton{
+
+    }
+    private class MyKeyListener implements KeyListener {
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+        }
+    }
 
 }
