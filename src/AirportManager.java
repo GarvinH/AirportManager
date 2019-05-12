@@ -486,7 +486,7 @@ public class AirportManager extends JFrame {
         }
         return false;
     }
-    
+
     /**
      * Removes a flight from the database
      * @param flight The flight name
@@ -542,24 +542,5 @@ public class AirportManager extends JFrame {
 
     }
 
-    private class Button extends JButton{
-
-    }
-    private class MyKeyListener implements KeyListener {
-        @Override
-        public void keyPressed(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyTyped(KeyEvent e) {
-
-        }
-    }
 
 }
