@@ -486,30 +486,7 @@ public class AirportManager extends JFrame {
         }
         return false;
     }
-
-    /**
-     * Changes a flight's arrival/departure time
-     * @param flight Name of the flight
-     * @param time Time to be changed to
-     * @return boolean value if flight is valid
-     */
-    public static boolean changeFlightTime(String flight, String time) {
-        Stack<Flight> arrivalStack = arrivals.saveTreeStack();
-        Stack<Flight> departStack = departures.saveTreeStack();
-        Flight tempFlight;
-        do {
-            tempFlight = arrivalStack.pop();
-            if ((tempFlight == null) || (!tempFlight.getName().equalsIgnoreCase(flight))) {
-                tempFlight = departStack.pop();
-            }
-        } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
-        if (tempFlight != null) {
-            tempFlight.setTime(time);
-            return true;
-        }
-        return false;
-    }
-
+    
     /**
      * Removes a flight from the database
      * @param flight The flight name
