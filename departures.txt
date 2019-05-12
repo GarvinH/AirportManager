@@ -1,0 +1,2 @@
+ZA4,United,San Francisco,2019/04/04,1700,Delayed,
+CA3,United,San Francisco,2019/04/04,1700,Delayed,

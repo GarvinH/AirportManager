@@ -113,7 +113,7 @@ public class Flight implements Comparable<Flight>, java.io.Serializable {
         // compare location
         int compare = location.compareTo(other.getLocation());
         if (compare == 0) {
-            //sort by date if destination/origin is the same
+            //sort by date if destination/origin is the same YYYY/MM/DD
             //compare year
             timeA = Integer.parseInt(date.substring(0,date.indexOf("/")));
             timeB = Integer.parseInt(otherDate.substring(0,otherDate.indexOf("/")));
@@ -131,7 +131,7 @@ public class Flight implements Comparable<Flight>, java.io.Serializable {
                         timeA = Integer.parseInt(time);
                         timeB = Integer.parseInt(other.getTime());
                         if (timeA == timeB) {
-                            //sort by names if times are the same
+                            //sort by names if times are the same 
                             //compare flight names
                             compare = name.substring(0,2).compareTo(other.getName().substring(0,2));
                             if (compare == 0) {

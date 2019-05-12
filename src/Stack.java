@@ -1,3 +1,4 @@
+
 /*
  * [Stack.java]
  * Stack data structure
@@ -30,6 +31,7 @@ public class Stack<E> {
     }
 
 }
+/** --------- INNER CLASS FOR NODE ------------- **/
 
 /*
  * [StNode.java]

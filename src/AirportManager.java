@@ -427,6 +427,7 @@ public class AirportManager extends JFrame {
         }
     }
 
+  
     /**
      * Loads up trees from a text file and stores the data into trees
      */
@@ -479,7 +480,7 @@ public class AirportManager extends JFrame {
 
             //save arrivals
             ObjectOutputStream output = new ObjectOutputStream(arriveFile);
-            Stack<Flight> arriveList = arrivals.saveTree();
+            Stack<Flight> arriveList = arrivals.saveTreeStack();
             size = arrivals.size(); // save the size of the tree to indicate end of file
             output.writeObject(size);
             for(int i = 0; i < size; i++) {
@@ -491,7 +492,7 @@ public class AirportManager extends JFrame {
 
             // save departures
             output = new ObjectOutputStream(departFile);
-            Stack<Flight> departList = departures.saveTree();
+            Stack<Flight> departList = departures.saveTreeStack();
             size = departures.size(); // save the size of the tree to indicate end of file
             output.writeObject(size);
             for(int i = 0; i < size; i++) {
@@ -512,8 +513,8 @@ public class AirportManager extends JFrame {
      * @return boolean value if flight is valid
      */
     public static boolean changeFlightStatus(String flight, String status) {
-        Stack<Flight> arrivalStack = arrivals.saveTree();
-        Stack<Flight> departStack = departures.saveTree();
+        Stack<Flight> arrivalStack = arrivals.saveTreeStack();
+        Stack<Flight> departStack = departures.saveTreeStack();
         Flight tempFlight;
         do {
             tempFlight = arrivalStack.pop();
@@ -530,36 +531,13 @@ public class AirportManager extends JFrame {
     }
 
     /**
-     * Changes a flight's arrival/departure time
-     * @param flight Name of the flight
-     * @param time Time to be changed to
-     * @return boolean value if flight is valid
-     */
-    public static boolean changeFlightTime(String flight, String time) {
-        Stack<Flight> arrivalStack = arrivals.saveTree();
-        Stack<Flight> departStack = departures.saveTree();
-        Flight tempFlight;
-        do {
-            tempFlight = arrivalStack.pop();
-            if ((tempFlight == null) || (!tempFlight.getName().equalsIgnoreCase(flight))) {
-                tempFlight = departStack.pop();
-            }
-        } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
-        if (tempFlight != null) {
-            tempFlight.setTime(time);
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Removes a flight from the database
      * @param flight The flight name
      * @return Boolean value indicating success or failure
      */
     public static boolean removeFlight(String flight) {
-        Stack<Flight> arrivalStack = arrivals.saveTree();
-        Stack<Flight> departStack = departures.saveTree();
+        Stack<Flight> arrivalStack = arrivals.saveTreeStack();
+        Stack<Flight> departStack = departures.saveTreeStack();
         Flight tempFlight;
         do {
             tempFlight = arrivalStack.pop();
@@ -570,7 +548,7 @@ public class AirportManager extends JFrame {
             return true;
         } else {
             do {
-                tempFlight = arrivalStack.pop();
+                tempFlight = departStack.pop();
             } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
         }
 
