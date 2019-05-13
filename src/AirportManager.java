@@ -51,21 +51,19 @@ public class AirportManager extends JFrame {
         arrivals.add(new Flight("AC2", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
         departures.add(new Flight("CA3", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
         departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1600", "Delayed"));
-        arrivals.displayInOrder();
-        departures.displayInOrder();
         //saveFile();
         //loadFile();
-        Stack<Flight> test = arrivals.saveTreeStack();
-        Flight tempFlight = test.pop();
-        System.out.println(tempFlight.getStatus());
-        System.out.println(changeFlightStatus(tempFlight.getName(), "Arrived"));
-        test = arrivals.saveTreeStack();
-        tempFlight = test.pop();
-        System.out.println(tempFlight.getStatus());
-        System.out.println(test.pop().getName());
-        test = departures.saveTreeStack();
-        System.out.println(test.pop().getName());
-        System.out.println(test.pop().getName());
+//        Stack<Flight> test = arrivals.saveTreeStack();
+//        Flight tempFlight = test.pop();
+//        System.out.println(tempFlight.getStatus());
+//        System.out.println(changeFlightStatus(tempFlight.getName(), "Arrived"));
+//        test = arrivals.saveTreeStack();
+//        tempFlight = test.pop();
+//        System.out.println(tempFlight.getStatus());
+//        System.out.println(test.pop().getName());
+//        test = departures.saveTreeStack();
+//        System.out.println(test.pop().getName());
+//        System.out.println(test.pop().getName());
         window = new AirportManager();
     }
 
@@ -534,6 +532,7 @@ public class AirportManager extends JFrame {
      * Changes a flight's current status
      * @param flight Name of the flight
      * @param status Status to be changed to
+     * @author Albert Quon
      * @return boolean value if flight is valid
      */
     public static boolean changeFlightStatus(String flight, String status) {
@@ -562,8 +561,9 @@ public class AirportManager extends JFrame {
     }
 
     /**
-     * Removes a flight from the tree
+     * Removes a flight from the tree, as direct removal
      * @param flight The flight name
+     * @author Albert Quon
      * @return Boolean value indicating success or failure
      */
     public static boolean removeFlight(String flight) {
@@ -592,19 +592,95 @@ public class AirportManager extends JFrame {
     }
 
     /**
-     *
+     * Automatically removes flights that do not need to be shown
+     * @author Albert Quon
      */
     public static void autoUpdate() {
         LocalTime localTime = LocalTime.now();
         LocalDate localDate = LocalDate.now();
+        Flight tempFlight;
         Stack<Flight> arrivalStack = arrivals.saveTreeStack();
         Stack<Flight> departStack = departures.saveTreeStack();
+        String flightDate;
+        int flightDay, flightMonth, flightYear, flightTime;
         int currentYear = localDate.getYear();
         int currentMonth = localDate.getMonthValue();
         int currentDay = localDate.getDayOfMonth();
-        int currentHour = localTime.getHour();
-        int currentMinute = localTime.getMinute();
+        int currentTime = localTime.getHour() * 100 + localTime.getMinute();
 
+        //arrivals
+        for(int i = 0; i < arrivals.size(); i++) {
+            tempFlight = arrivalStack.pop();
+            flightDate = tempFlight.getDate();
+            flightTime = Integer.parseInt(tempFlight.getTime());
+            // check year
+            flightYear = Integer.parseInt(flightDate.substring(0,flightDate.indexOf("/")));
+            if (flightYear < currentYear) {
+                arrivals.remove(tempFlight);
+            } else {
+                // check month
+                flightMonth = Integer.parseInt(flightDate.substring(flightDate.indexOf("/") + 1, flightDate.lastIndexOf("/")));
+                if (flightMonth < currentMonth) {
+                    arrivals.remove(tempFlight);
+                } else {
+                    // check day
+                    flightDay = Integer.parseInt(flightDate.substring(tempFlight.getDate().lastIndexOf("/")+1));
+                    if (flightDay < currentDay) {
+                        arrivals.remove(tempFlight);
+                    } else {
+                        // check time
+                        // delayed flights need 3 hours passed to be removed
+                        if (tempFlight.getStatus().equalsIgnoreCase("delayed")) {
+                            if (currentTime - flightTime > 300) {
+                                arrivals.remove(tempFlight);
+                            }
+                        } else { // any other flights need 15 minutes
+                            if (currentTime - flightTime > 15) {
+                                arrivals.remove(tempFlight);
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        //departures
+        for(int i = 0; i < departures.size(); i++) {
+            tempFlight = arrivalStack.pop();
+            flightDate = tempFlight.getDate();
+            flightTime = Integer.parseInt(tempFlight.getTime());
+            // check year
+            flightYear = Integer.parseInt(flightDate.substring(0,flightDate.indexOf("/")));
+            if (flightYear < currentYear) {
+                departures.remove(tempFlight);
+            } else {
+                // check month
+                flightMonth = Integer.parseInt(flightDate.substring(flightDate.indexOf("/") + 1, flightDate.lastIndexOf("/")));
+                if (flightMonth < currentMonth) {
+                    departures.remove(tempFlight);
+                } else {
+                    // check day
+                    flightDay = Integer.parseInt(flightDate.substring(tempFlight.getDate().lastIndexOf("/")+1));
+                    if (flightDay < currentDay) {
+                        departures.remove(tempFlight);
+                    } else {
+                        // check time
+                        // delayed flights need 3 hours passed to be removed
+                        if (tempFlight.getStatus().equalsIgnoreCase("delayed")) {
+                            if (currentTime - flightTime > 300) {
+                                departures.remove(tempFlight);
+                            }
+                        } else { // any other flights need 15 minutes
+                            if (currentTime - flightTime > 15) {
+                                departures.remove(tempFlight);
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
 
 
     }
