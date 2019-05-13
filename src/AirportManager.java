@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 // java.util
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -46,21 +47,25 @@ public class AirportManager extends JFrame {
     public static void main(String[] args) {
         arrivals = new SortBTree<>();
         departures = new SortBTree<>();
-        /*arrivals.add(new Flight("SA1", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
+        arrivals.add(new Flight("SA1", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
         arrivals.add(new Flight("AC2", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
         departures.add(new Flight("CA3", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
         departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1600", "Delayed"));
         arrivals.displayInOrder();
-        System.out.println(removeFlight("SA2"));
         departures.displayInOrder();
-        // saveFile();
+        //saveFile();
         //loadFile();
-        Stack<Flight> test = arrivals.saveTree();
+        Stack<Flight> test = arrivals.saveTreeStack();
+        Flight tempFlight = test.pop();
+        System.out.println(tempFlight.getStatus());
+        System.out.println(changeFlightStatus(tempFlight.getName(), "Arrived"));
+        test = arrivals.saveTreeStack();
+        tempFlight = test.pop();
+        System.out.println(tempFlight.getStatus());
         System.out.println(test.pop().getName());
-        System.out.println(test.pop());
-        test = departures.saveTree();
+        test = departures.saveTreeStack();
         System.out.println(test.pop().getName());
-        System.out.println(test.pop().getName());**/
+        System.out.println(test.pop().getName());
         window = new AirportManager();
     }
 
@@ -538,15 +543,20 @@ public class AirportManager extends JFrame {
         //search for the flight by name in both stacks
         do {
             tempFlight = arrivalStack.pop();
-            if ((tempFlight == null) || (!tempFlight.getName().equalsIgnoreCase(flight))) {
-                tempFlight = departStack.pop();
-            }
         } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
 
         //change the status
         if (tempFlight != null) {
-            tempFlight.setStatus(status);
+            ((Flight)arrivals.getItem(tempFlight)).setStatus(status);
             return true;
+        } else {
+            do {
+                tempFlight = departStack.pop();
+            } while (tempFlight != null && !tempFlight.getName().equalsIgnoreCase(flight));
+            if (tempFlight != null) {
+                ((Flight)departures.getItem(tempFlight)).setStatus(status);
+                return true;
+            }
         }
         return false;
     }
@@ -579,6 +589,24 @@ public class AirportManager extends JFrame {
         }
 
         return false;
+    }
+
+    /**
+     *
+     */
+    public static void autoUpdate() {
+        LocalTime localTime = LocalTime.now();
+        LocalDate localDate = LocalDate.now();
+        Stack<Flight> arrivalStack = arrivals.saveTreeStack();
+        Stack<Flight> departStack = departures.saveTreeStack();
+        int currentYear = localDate.getYear();
+        int currentMonth = localDate.getMonthValue();
+        int currentDay = localDate.getDayOfMonth();
+        int currentHour = localTime.getHour();
+        int currentMinute = localTime.getMinute();
+
+
+
     }
 
 

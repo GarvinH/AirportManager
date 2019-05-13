@@ -1,4 +1,3 @@
-
 /*
  * [SortBTree.java]
  * Sorted Binary Tree, which is self-balanced as an AVL tree
@@ -16,13 +15,13 @@ public class SortBTree<E extends Comparable<E>> {
      * @author Albert Quon
      * @return boolean value if item is found or not
      */
-    public boolean contains(E item){
+    public E getItem(E item){
         if (root != null) {
             if(root.getItem().equals(item)){
-                return true;
+                return (E)root.getItem();
             }
         }
-        return containHelper(root, item);
+        return getItemHelper(root, item);
     }
 
     /**
@@ -32,20 +31,20 @@ public class SortBTree<E extends Comparable<E>> {
      * @author Albert Quon
      * @return boolean value if item is found or not
      */
-    private boolean containHelper(SortBTreeNode node, E item){
+    private E getItemHelper(SortBTreeNode node, E item){
         if (node == null){
-            return false;
+            return null;
         }
         if (node.getItem().equals(item)){ // item is found
-            return true;
+            return  (E)node.getItem();
         }
         if (item.compareTo((E) node.getItem()) > 0) { // if item is compared to be lower then go to the left child
-            return containHelper(node.getRight(), item);
+            return getItemHelper(node.getRight(), item);
         }
         if (item.compareTo((E) node.getItem()) < 0) { // if item is compared to be higher then go to the right child
-            return containHelper(node.getLeft(), item);
+            return getItemHelper(node.getLeft(), item);
         }
-        return false; // not present
+        return null; // not present
     }
 
     /**

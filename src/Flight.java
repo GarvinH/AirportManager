@@ -56,7 +56,7 @@ public class Flight implements Comparable<Flight>, java.io.Serializable {
      * @param status The flight's new status
      */
     public void setStatus(String status) {
-        this.location = location;
+        this.status = status;
     }
 
     /**
