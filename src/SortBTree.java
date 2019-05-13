@@ -1,7 +1,7 @@
 /*
  * [SortBTree.java]
  * Sorted Binary Tree, which is self-balanced as an AVL tree
- * Albert Quon & Garvin Hui
+ * Albert Quon
  * 2019/05/06
  */
 
@@ -10,26 +10,21 @@ public class SortBTree<E extends Comparable<E>> {
     private Stack<E> itemStack; // for saving all items to be used for file saving
 
     /**
-     * Finds if an object exists within the tree
+     * Finds an item within a tree
      * @param item Item that is to be found
      * @author Albert Quon
-     * @return boolean value if item is found or not
+     * @return The item
      */
     public E getItem(E item){
-        if (root != null) {
-            if(root.getItem().equals(item)){
-                return (E)root.getItem();
-            }
-        }
         return getItemHelper(root, item);
     }
 
     /**
-     * Recursive helper to traverse the tree
+     * Recursive helper to traverse the tree to retrieve an item
      * @param node Current node
      * @param item Item for comparison
      * @author Albert Quon
-     * @return boolean value if item is found or not
+     * @return The item
      */
     private E getItemHelper(SortBTreeNode node, E item){
         if (node == null){
@@ -87,6 +82,7 @@ public class SortBTree<E extends Comparable<E>> {
         if (node == null){
             return (new SortBTreeNode(item));
         }
+        // search for the correct spot
         if (item.compareTo((E) node.getItem()) > 0){
             node.setRight(addHelper(node.getRight(), item));
         } else if (item.compareTo((E) node.getItem()) < 0) {
@@ -95,7 +91,7 @@ public class SortBTree<E extends Comparable<E>> {
             return node;
         }
 
-        //****************************************BALANCE THE NODE************************************************
+        //****************************************BALANCE THE NODES************************************************
 
         // change height due to the addition of a node
         node.setHeight(node.getHeight()+1 + Integer.max(nodeHeight(node.getLeft()), nodeHeight(node.getRight())));
@@ -141,7 +137,7 @@ public class SortBTree<E extends Comparable<E>> {
         if (node == null) {
             return null;
         }
-        // do regular remove
+        // do regular remove first before balancing
         if (item.compareTo((E) node.getItem()) > 0) {
             node.setRight(removeHelper(node.getRight(), item));
         } else if (item.compareTo((E) node.getItem()) < 0) {
@@ -164,7 +160,7 @@ public class SortBTree<E extends Comparable<E>> {
             }
         }
 
-        //***************************************BALANCE THE NODE*********************************************
+        //***************************************BALANCE THE NODES*********************************************
         if (node == null) { // if node is a leaf
             return null;
         }
@@ -364,12 +360,9 @@ public class SortBTree<E extends Comparable<E>> {
         if (node == null){
             return;
         } else {
-
             traverseStack(node.getRight()); // put in the greatest node first
             itemStack.push((E)node.getItem()); // put in current node
             traverseStack(node.getLeft()); // put in smallest node last
-
-
         }
     }
 }

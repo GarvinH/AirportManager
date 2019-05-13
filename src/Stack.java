@@ -7,7 +7,7 @@
  */
 
 public class Stack<E> {
-    StNode<E> top;
+    private StNode<E> top;
 
     /**
      * Adds a new item to the stack

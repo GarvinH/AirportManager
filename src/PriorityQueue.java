@@ -1,4 +1,9 @@
-
+/*
+ * PriorityQueue.java
+ * Priority Queue data structure
+ * Garvin Hui
+ * 2019/05/12
+ */
 public class PriorityQueue<E> {
     private PQNode<E> head;
     private PQNode<E> tail;
@@ -22,17 +27,7 @@ public class PriorityQueue<E> {
                 System.out.println(tempNode.getItem() + " " + item);
                 tempNode = tempNode.getNext();
             }
-
-            /*if (tempNode.compareTo(priority) == 1) {
-                if (item.equals("test7") || item.equals("test5")) {
-                    System.out.println(item);
-                    System.out.println("here");
-                    System.out.println(tempNode.getItem());
-                    System.out.println(tempNode.getPrevious().getItem());
-                }
-                tempNode = tempNode.getPrevious();
-                tempNode.setNext(new Node(item, priority, tempNode.getNext(), tempNode));
-            } else*/ if (tempNode.compareTo(priority) <= 0) {
+        if (tempNode.compareTo(priority) <= 0) {
                 tempNode.setNext(new PQNode(item, priority, null, tempNode));
                 tail = tempNode.getNext();
             } else {

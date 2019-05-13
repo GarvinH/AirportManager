@@ -32,7 +32,7 @@ import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
-// java.util
+// java.util and java.time
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,18 +42,21 @@ import java.util.Arrays;
 public class AirportManager extends JFrame {
     static JFrame window;
     JPanel flightEditor;
-    static SortBTree arrivals, departures;
+    static SortBTree arrivals, departures; // trees to store the flights
 
+    /**
+     * Main method
+     * @param args
+     */
     public static void main(String[] args) {
-        arrivals = new SortBTree<>();
-        departures = new SortBTree<>();
+        window = new AirportManager();
         arrivals.add(new Flight("SA1", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
         arrivals.add(new Flight("AC2", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
         departures.add(new Flight("CA3", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
         departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1600", "Delayed"));
         //saveFile();
         //loadFile();
-//        Stack<Flight> test = arrivals.saveTreeStack();
+
 //        Flight tempFlight = test.pop();
 //        System.out.println(tempFlight.getStatus());
 //        System.out.println(changeFlightStatus(tempFlight.getName(), "Arrived"));
@@ -64,9 +67,14 @@ public class AirportManager extends JFrame {
 //        test = departures.saveTreeStack();
 //        System.out.println(test.pop().getName());
 //        System.out.println(test.pop().getName());
-        window = new AirportManager();
+
+
     }
 
+    /**
+     * Constructor for the airport manager to initiate GUI
+     * @author Garvin Hui
+     */
     AirportManager() {
         super("Flight Editor");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,6 +86,9 @@ public class AirportManager extends JFrame {
         JMenu fileTab = new JMenu("File");
         menuBar.add(fileTab);
         setJMenuBar(menuBar);*/
+
+        arrivals = new SortBTree<>();
+        departures = new SortBTree<>();
 
         String[] dayStrings = new String[31];
         String[] monthStrings = new String[12];
@@ -118,6 +129,11 @@ public class AirportManager extends JFrame {
         this.setVisible(true);
     }
 
+    /***************************************************INNER CLASSES**************************************************/
+
+    /*
+     * @author Garvin Hui
+     */
     private class AirportTabs extends JTabbedPane {
         AirportTabs() {
             addTab("Add a Flight", flightEditor);
@@ -125,6 +141,9 @@ public class AirportManager extends JFrame {
         }
     }
 
+    /*
+     * @author Garvin Hui
+     */
     private class EditPanel extends JPanel {
         JScrollPane arrivalPane;
         JScrollPane departPane;
@@ -164,7 +183,8 @@ public class AirportManager extends JFrame {
         }
 
         /**
-         *
+         * Displays GUI
+         * @author Garvin Hui
          * @param g
          */
         public void paintComponent(Graphics g) {
@@ -176,6 +196,9 @@ public class AirportManager extends JFrame {
 
     }
 
+    /*
+     * @author Garvin Hui
+     */
     private class AddPanel extends JPanel implements ActionListener {
         JComboBox yearOptions;
         JComboBox monthOptions;
@@ -187,6 +210,10 @@ public class AirportManager extends JFrame {
         JTextField flightName;
         JTextField flightCompany;
         JComboBox status;
+
+        /**
+         * Constructor for panel of adding flights
+         */
         AddPanel() {
             setLayout(null);
             LocalDate currentDate = LocalDate.now();
@@ -351,6 +378,9 @@ public class AirportManager extends JFrame {
         }
 
         @Override
+        /**
+         *
+         */
         public void actionPerformed(ActionEvent e) {
             Integer[] longMonths = {1,3,5,7,8,10,12};
             String[] longDates = new String[32];
@@ -407,6 +437,10 @@ public class AirportManager extends JFrame {
             }
         }
 
+        /**
+         *
+         * @param g
+         */
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             this.setDoubleBuffered(true);
@@ -427,6 +461,9 @@ public class AirportManager extends JFrame {
             g.drawString("Minute", 75, 140);
         }
 
+        /**
+         *
+         */
         public void clearInputs() {
             yearOptions.setSelectedIndex(0);
             monthOptions.setSelectedIndex(0);
@@ -452,6 +489,7 @@ public class AirportManager extends JFrame {
   
     /**
      * Loads up trees from a serialized file and stores the data into trees
+     * @author Albert Quon
      */
     public static void loadFile() {
         ObjectInputStream fileInput;
@@ -492,6 +530,7 @@ public class AirportManager extends JFrame {
 
     /**
      * Saves the current trees on to serialized files
+     * @author Albert Quon
      */
     public static void saveFile(){
         Integer size;
@@ -603,38 +642,41 @@ public class AirportManager extends JFrame {
         Stack<Flight> departStack = departures.saveTreeStack();
         String flightDate;
         int flightDay, flightMonth, flightYear, flightTime;
+        int arrivalsSize = arrivals.size();
+        int departSize = departures.size();
         int currentYear = localDate.getYear();
         int currentMonth = localDate.getMonthValue();
         int currentDay = localDate.getDayOfMonth();
         int currentTime = localTime.getHour() * 100 + localTime.getMinute();
 
         //arrivals
-        for(int i = 0; i < arrivals.size(); i++) {
+        for(int i = 0; i < arrivalsSize; i++) {
             tempFlight = arrivalStack.pop();
             flightDate = tempFlight.getDate();
             flightTime = Integer.parseInt(tempFlight.getTime());
+
             // check year
             flightYear = Integer.parseInt(flightDate.substring(0,flightDate.indexOf("/")));
             if (flightYear < currentYear) {
                 arrivals.remove(tempFlight);
-            } else {
+            } else if (currentYear - flightYear == 0) { // same year
                 // check month
                 flightMonth = Integer.parseInt(flightDate.substring(flightDate.indexOf("/") + 1, flightDate.lastIndexOf("/")));
                 if (flightMonth < currentMonth) {
                     arrivals.remove(tempFlight);
-                } else {
+                } else if (currentMonth - flightMonth == 0){ // same month
                     // check day
-                    flightDay = Integer.parseInt(flightDate.substring(tempFlight.getDate().lastIndexOf("/")+1));
+                    flightDay = Integer.parseInt(flightDate.substring(flightDate.lastIndexOf("/")+1));
                     if (flightDay < currentDay) {
                         arrivals.remove(tempFlight);
-                    } else {
+                    } else if (currentDay - flightDay == 0){ // same day
                         // check time
                         // delayed flights need 3 hours passed to be removed
                         if (tempFlight.getStatus().equalsIgnoreCase("delayed")) {
                             if (currentTime - flightTime > 300) {
                                 arrivals.remove(tempFlight);
                             }
-                        } else { // any other flights need 15 minutes
+                        } else { // any other flights need 15 minutes passed to be removed
                             if (currentTime - flightTime > 15) {
                                 arrivals.remove(tempFlight);
                             }
@@ -646,32 +688,33 @@ public class AirportManager extends JFrame {
         }
 
         //departures
-        for(int i = 0; i < departures.size(); i++) {
-            tempFlight = arrivalStack.pop();
+        for(int i = 0; i < departSize; i++) {
+            tempFlight = departStack.pop();
             flightDate = tempFlight.getDate();
             flightTime = Integer.parseInt(tempFlight.getTime());
+
             // check year
             flightYear = Integer.parseInt(flightDate.substring(0,flightDate.indexOf("/")));
             if (flightYear < currentYear) {
                 departures.remove(tempFlight);
-            } else {
+            } else if (currentYear - flightYear == 0) { // same year
                 // check month
                 flightMonth = Integer.parseInt(flightDate.substring(flightDate.indexOf("/") + 1, flightDate.lastIndexOf("/")));
                 if (flightMonth < currentMonth) {
                     departures.remove(tempFlight);
-                } else {
+                } else if (currentMonth - flightMonth == 0){ // same month
                     // check day
-                    flightDay = Integer.parseInt(flightDate.substring(tempFlight.getDate().lastIndexOf("/")+1));
+                    flightDay = Integer.parseInt(flightDate.substring(flightDate.lastIndexOf("/")+1));
                     if (flightDay < currentDay) {
                         departures.remove(tempFlight);
-                    } else {
+                    } else if (currentDay - flightDay == 0){ // same day
                         // check time
                         // delayed flights need 3 hours passed to be removed
                         if (tempFlight.getStatus().equalsIgnoreCase("delayed")) {
                             if (currentTime - flightTime > 300) {
                                 departures.remove(tempFlight);
                             }
-                        } else { // any other flights need 15 minutes
+                        } else { // any other flights need 15 minutes passed to be removed
                             if (currentTime - flightTime > 15) {
                                 departures.remove(tempFlight);
                             }
