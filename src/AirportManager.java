@@ -5,44 +5,46 @@
  */
 
 //imports
-// java.awt
-import java.awt.Font;
-import java.awt.Graphics;
+//java.awt
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.time.LocalDate;
-// javax.swing
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.event.*;
+//javax.swing
 import javax.swing.BorderFactory;
-import javax.swing.JTabbedPane;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JTextArea;
-// java.io
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+//java.io
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
-// java.util and java.time
+//java.time
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+//java.lang
+import java.lang.Long;
+//java.util
 import java.util.Arrays;
-
-
+import java.util.ArrayList;
 
 public class AirportManager extends JFrame {
-    static JFrame window;
-    JPanel flightEditor;
-    static SortBTree arrivals, departures; // trees to store the flights
+    static JFrame window;//Main frame used by airport
+    JPanel flightEditor;//panel for adding flights
+    static SortBTree arrivals, departures;//trees to store flights
 
     /**
      * Main method
@@ -50,45 +52,28 @@ public class AirportManager extends JFrame {
      */
     public static void main(String[] args) {
         window = new AirportManager();
-        arrivals.add(new Flight("SA1", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        arrivals.add(new Flight("AC2", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        departures.add(new Flight("CA3", "United", "San Francisco", "2019/04/04", "1700", "Delayed"));
-        departures.add(new Flight("ZA4", "United", "San Francisco", "2019/04/04", "1600", "Delayed"));
-        //saveFile();
-        //loadFile();
-
-//        Flight tempFlight = test.pop();
-//        System.out.println(tempFlight.getStatus());
-//        System.out.println(changeFlightStatus(tempFlight.getName(), "Arrived"));
-//        test = arrivals.saveTreeStack();
-//        tempFlight = test.pop();
-//        System.out.println(tempFlight.getStatus());
-//        System.out.println(test.pop().getName());
-//        test = departures.saveTreeStack();
-//        System.out.println(test.pop().getName());
-//        System.out.println(test.pop().getName());
-
-
     }
 
     /**
      * Constructor for the airport manager to initiate GUI
-     * @author Garvin Hui
+     * @Author Garvin Hui
      */
     AirportManager() {
         super("Flight Editor");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                saveFile();
+            }
+        });
         this.setSize(640, 480);
         this.setResizable(false);
-        //getContentPane().setLayout(null);
-
-        /*JMenuBar menuBar = new JMenuBar();
-        JMenu fileTab = new JMenu("File");
-        menuBar.add(fileTab);
-        setJMenuBar(menuBar);*/
 
         arrivals = new SortBTree<>();
         departures = new SortBTree<>();
+        loadFile();
 
         String[] dayStrings = new String[31];
         String[] monthStrings = new String[12];
@@ -102,7 +87,6 @@ public class AirportManager extends JFrame {
         JComboBox monthOptions = new JComboBox(monthStrings);
         JPanel dateHolder = new JPanel();
         JPanel monthHolder = new JPanel();
-        //dateHolder.setLayout(null);
         dateHolder.setSize(new Dimension(50,50));
         dateHolder.add(dayOptions, BorderLayout.PAGE_START);
         dateHolder.setLocation(10,10);
@@ -110,28 +94,17 @@ public class AirportManager extends JFrame {
         monthHolder.add(monthOptions, BorderLayout.PAGE_START);
         monthHolder.setLocation(70,10);
 
-        //JTabbedPane flightTabs = new JTabbedPane();
-
         flightEditor = new AddPanel();
         flightEditor.setBounds(0,0,getWidth(),getHeight());
-        //flightTabs.addTab("Add a Flight", flightEditor);
-        //flightTabs.setMnemonicAt(0, KeyEvent.VK_1);
         add(new AirportTabs());
-        //flightEditor.add(new testScroll());
-        //add(flightEditor);
-        //add(dayOptions, BorderLayout.PAGE_START);
-        //add(dateHolder);
-        //add(monthHolder);
-
-        //this.add(new JScrollPane(new JTextField("Hello Wolrd \nt\nt\nt\nt\nt\nt\nt\nt\nt\ntt\nt\nt\nasdlkfjapjjgaporiaigp")));
-        //use jlist
 
         this.setVisible(true);
     }
 
     /***************************************************INNER CLASSES**************************************************/
 
-    /*
+    /**
+     * this class stores each panel for the main frame (add and edit flights)
      * @author Garvin Hui
      */
     private class AirportTabs extends JTabbedPane {
@@ -141,63 +114,334 @@ public class AirportManager extends JFrame {
         }
     }
 
-    /*
-     * @author Garvin Hui
+    /**
+     * This panel is GUI for the editing flights panel
+     * @Author Garvin Hui
      */
     private class EditPanel extends JPanel {
-        JScrollPane arrivalPane;
-        JScrollPane departPane;
-        JList arriveList;
-        JList departList;
-        int arriveSize;
+        JScrollPane arrivalPane;//stores all arriving flights into a scroll pane
+        JScrollPane departPane;//stores all departing flights into another scroll panel
+        JList arriveList;//stores all arriving flights as String value
+        JList departList;//stores all departing flights as String Value
+        int arriveSize;//This and departSize are used to compare with arrivals/departures tree size to check when to update the lists
         int departSize;
+        JFrame editFrame;//secondary frame for editing or viewing flight info
+        JPanel changePanel;//the panel used for editFrame
+        PriorityQueue<Flight> itemPQueue;//stores temporarily the arriving or departing flights by date
+        ArrayList<String> arriveNames;//This and departNames stores flight info as String to be displayed onto screen
+        ArrayList<String> departNames;
+        DefaultListModel<String> arriveModel;//this and departModel saves arriveNames/departNames into a model to be used by list
+        DefaultListModel<String> departModel;
         EditPanel() {
             setLayout(null);
-            ArrayList<String> arriveNames = new ArrayList<String>();
-            ArrayList<String> departNames = new ArrayList<String>();
-            Stack<Flight> readIn = arrivals.saveTreeStack();
-            Flight tempFlight = readIn.pop();
-            while (tempFlight != null) {
-                arriveNames.add(tempFlight.getName());
-                tempFlight = readIn.pop();
-            }
-            readIn = departures.saveTreeStack();
-            tempFlight = readIn.pop();
-            while (tempFlight != null) {
-                departNames.add(tempFlight.getName());
-                tempFlight = readIn.pop();
-            }
+
+            JButton viewEdit = new JButton("Edit/View");
+
+            arriveSize = arrivals.size();
+            departSize = departures.size();
+
+            arriveNames = new ArrayList<String>();
+            departNames = new ArrayList<String>();
+
+            arriveModel = new DefaultListModel<String>();
+            departModel = new DefaultListModel<String>();
 
             arrivalPane = new JScrollPane();
-            arriveList = new JList(arriveNames.toArray());
+            arriveList = new JList(arriveModel);
+            arriveList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);//allows only 1 flight to be selected at a given time
+            arriveList.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    super.mousePressed(e);
+                    if (!departList.isSelectionEmpty()) {
+                        departList.clearSelection();//allows only 1 flight to be selected at a given time
+                    }
+                }
+            });
+            arriveList.setFont(new Font("monospaced", Font.PLAIN, 12));
             arrivalPane.setViewportView(arriveList);
+
             departPane = new JScrollPane();
-            departList = new JList(departNames.toArray());
+            departList = new JList(departModel);
+            departList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);//allows only 1 flight to be selected at a given time
+            departList.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    super.mousePressed(e);
+                    if (!arriveList.isSelectionEmpty()) {
+                        arriveList.clearSelection();//allows only 1 flight to be selected at a given time
+                    }
+                }
+            });
+            departList.setFont(new Font("monospaced", Font.PLAIN, 12));
             departPane.setViewportView(departList);
 
-            arrivalPane.setBounds(10, 30, 80, 80);
-            departPane.setBounds(10,150,80,80);
+            //setting where components will be on screen
+            arrivalPane.setBounds(10, 30, 600, 130);
+            departPane.setBounds(10, 200,600,130);
+            viewEdit.setBounds(500, 350, 100, 40);
+
+            viewEdit.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (!arriveList.isSelectionEmpty()) {
+                        //using the flight info displayed on GUI, find the flight to be edited from arrivals
+                        editFrame = new JFrame();
+                        PriorityQueue readIn = savePQueue(arrivals);
+                        Flight tempFlight = (Flight)readIn.dequeue();
+                        while (!tempFlight.getName().equals(arriveList.getSelectedValue().toString().substring(0,arriveList.getSelectedValue().toString().indexOf(" ")))) {
+                            tempFlight = (Flight)readIn.dequeue();
+                        }
+                        //creating secondary GUI and hiding primary GUI
+                        changePanel = new ChangePanel(tempFlight.getDate().substring(0,4), tempFlight.getDate().substring(5,7), tempFlight.getDate().substring(8,10), tempFlight.getTime().substring(0,2), tempFlight.getTime().substring(2,4), tempFlight.getLocation(), "Arriving", tempFlight.getName(), tempFlight.getAirline(), tempFlight.getStatus());
+                        editFrame.setVisible(true);
+                        editFrame.add(changePanel);
+                        editFrame.setSize(640,480);
+                        editFrame.setResizable(false);
+                        editFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                        window.setVisible(false);
+                    } else if (!departList.isSelectionEmpty()) {
+                        //using the flight info displayed on GUI, find the flight to be edited from departures
+                        editFrame = new JFrame();
+                        PriorityQueue readIn = savePQueue(departures);
+                        Flight tempFlight = (Flight)readIn.dequeue();
+                        while (!tempFlight.getName().equals(departList.getSelectedValue().toString().substring(0,departList.getSelectedValue().toString().indexOf(" ")))) {
+                            tempFlight = (Flight)readIn.dequeue();
+                        }
+                        //creating secondary GUI and hiding primary GUI
+                        changePanel = new ChangePanel(tempFlight.getDate().substring(0,4), tempFlight.getDate().substring(5,7), tempFlight.getDate().substring(8,10), tempFlight.getTime().substring(0,2), tempFlight.getTime().substring(2,4), tempFlight.getLocation(), "Departing", tempFlight.getName(), tempFlight.getAirline(), tempFlight.getStatus());
+                        editFrame.setVisible(true);
+                        editFrame.add(changePanel);
+                        editFrame.setSize(640,480);
+                        editFrame.setResizable(false);
+                        editFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                        window.setVisible(false);
+                    }
+                }
+            });
+
+            updateArrivals();
+            updateDepartures();
 
             add(arrivalPane);
             add(departPane);
+            add(viewEdit);
         }
 
         /**
-         * Displays GUI
-         * @author Garvin Hui
-         * @param g
+         * Panel used by editWindow allowing for changes to flight to be made by GUI
+         * @Author Garvin Hui
          */
+        private class ChangePanel extends JPanel {
+            String year;
+            String month;
+            String day;
+            String hour;
+            String minute;
+            String location;
+            String direction;
+            String name;
+            String company;
+            String status;
+
+            /**
+             * Constructor that takes in the selected flight from list and creates GUI for user to view info and possibly make changes
+             * @param year year of flight
+             * @param month month of flight
+             * @param day day of flight
+             * @param hour hour of flight
+             * @param minute minute of flight
+             * @param location where flight is going
+             * @param direction flight is arriving/departing
+             * @param name flight name
+             * @param company company of airlines
+             * @param status on time/delayed/canceled
+             * @Author Garvin Hui
+             */
+            ChangePanel(String year, String month, String day, String hour, String minute, String location, String direction, String name, String company, String status) {
+                setLayout(null);
+                this.year = year;
+                this.month = month;
+                this.day = day;
+                this.hour = hour;
+                this.minute = minute;
+                this.location = location;
+                this.direction = direction;
+                this.name = name;
+                this.company = company;
+                this.status = status;
+
+                JButton save = new JButton("Save/Close");
+                save.setBounds(460,380,130,40);
+                save.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {//if flight is cancelled, you can't edit; only close
+                        window.setVisible(true);
+                        editFrame.setVisible(false);
+                        editFrame.dispose();
+                    }
+                });
+
+                if (!status.equals("Cancelled")) {
+                    String[] statusStrings = {"On Time", "Delayed", "Cancelled"};//if flight isn't cancelled, now you can edit flight
+                    JComboBox stat = new JComboBox(statusStrings);
+                    stat.setSelectedItem(status);
+                    stat.setBounds(300,185,90,25);
+                    for (ActionListener a: save.getActionListeners()) {//removing old actionListeners
+                        save.removeActionListener(a);
+                    }
+                    save.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            changeFlightStatus(name, (String)stat.getSelectedItem());//updating flight status
+                            updateArrivals();
+                            updateDepartures();
+                            window.setVisible(true);
+                            editFrame.setVisible(false);
+                            editFrame.dispose();
+                        }
+                    });
+                    add(stat);
+                }
+
+                add(save);
+            }
+
+            //updating or drawing GUI for flight info changes or viewing (changePanel)
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                this.setDoubleBuffered(true);
+                repaint();
+                //Titles
+                g.setFont(new Font("Arial", Font.BOLD, 16));
+                g.drawString("Date", 10 ,25 );
+                g.drawString("Time", 10, 115);
+                g.drawString("Location", 10, 210);
+                g.drawString("Arrive/Depart", 10, 275);
+                g.drawString("Flight Name", 300, 25);
+                g.drawString("Flight Company", 300, 100);
+                g.drawString("Status", 300, 170);
+                g.setFont(new Font("Arial", Font.PLAIN, 14));
+                //info
+                g.drawString("Year",10,50);
+                g.drawString(year, 10, 70);
+                g.drawString("Month",85, 50);
+                g.drawString(month, 85,70);
+                g.drawString("Day", 150, 50);
+                g.drawString(day, 150,70);
+                g.drawString("Hour", 10, 140);
+                g.drawString(hour, 10, 160);
+                g.drawString("Minute", 75, 140);
+                g.drawString(minute, 75, 160);
+                g.drawString(location, 10, 230);
+                g.drawString(direction, 10, 295);
+                g.drawString(name, 300, 45);
+                g.drawString(company, 300, 120);
+                if (status.equals("Cancelled")) {
+                    g.drawString(status, 300, 190);
+                }
+            }
+        }
+
+        //updating GUI for EditPanel
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             this.setDoubleBuffered(true);
             repaint();
+            LocalDateTime currentTime = LocalDateTime.now();
+            String currentDay;
+            String currentHour;
+            String currentMinute;
+            if (currentTime.getDayOfMonth() < 10) {
+                currentDay = "0"+Integer.toString(currentTime.getDayOfMonth());
+            } else {
+                currentDay = Integer.toString(currentTime.getDayOfMonth());
+            }
+            if (currentTime.getHour() < 10) {
+                currentHour = "0"+Integer.toString(currentTime.getHour());
+            } else {
+                currentHour = Integer.toString(currentTime.getHour());
+            }
+            if (currentTime.getMinute() < 10) {
+                currentMinute = "0"+Integer.toString(currentTime.getMinute());
+            } else {
+                currentMinute = Integer.toString(currentTime.getMinute());
+            }
+            autoUpdate();
+
+            g.setFont(new Font("Arial", Font.BOLD, 16));
+            g.drawString("Arrivals", 280, 25);
+            g.drawString("Departures", 260, 190);
+            //draws current date and time
+            g.drawString(currentTime.getYear() +"/"+ currentTime.getMonth() +"/"+ currentDay +"  "+ currentHour+":"+currentMinute, 10, 400);
+            if (arriveSize != arrivals.size()) {//if sizes don't match for either departures or arrivals, update list for GUI
+                updateArrivals();
+            }
+
+            if (departSize != departures.size()) {
+                updateDepartures();
+            }
         }
 
+        /**
+         * updates the list for arrivals for GUI on EditPanel
+         * @Author Garvin Hui
+         */
+        private void updateArrivals() {
+            itemPQueue = savePQueue(arrivals);
+            Flight tempFlight = itemPQueue.dequeue();
+            arriveModel.removeAllElements();
+            arriveSize = 0;
+            for (int i = 0; i < arrivals.size(); i++) {
+                arriveNames.add(String.format("%-8s", tempFlight.getName()) + tempFlight.getDate() + "  " + tempFlight.getTime().substring(0, 2) + ":" + tempFlight.getTime().substring(2, 4) + "  " + String.format("%-11s", tempFlight.getStatus()) + tempFlight.getLocation());
+                arriveModel.addElement(arriveNames.get(arriveNames.size() - 1));
+                arriveSize++;
+                tempFlight = itemPQueue.dequeue();
+            }
+        }
 
+        /**
+         * updates the list for departures for GUI on EditPanel
+         * @Author Garvin Hui
+         */
+        private void updateDepartures() {
+            itemPQueue = savePQueue(departures);
+            Flight tempFlight = itemPQueue.dequeue();
+            departModel.removeAllElements();
+            departSize = 0;
+            for (int i = 0; i < departures.size(); i++) {
+                departNames.add(String.format("%-8s", tempFlight.getName()) + tempFlight.getDate() + "  " + tempFlight.getTime().substring(0,2) + ":" + tempFlight.getTime().substring(2,4) + "  " + String.format("%-11s", tempFlight.getStatus()) + tempFlight.getLocation());
+                departModel.addElement(departNames.get(departNames.size()-1));
+                departSize++;
+                tempFlight = itemPQueue.dequeue();
+            }
+        }
+
+        /**
+         * Takes in arrival or departure to convert into stack then converts into priority queue ordering flights by date
+         * @param tree takes in either arrival or departure tree
+         * @return priority queue of flights in order by date and time
+         */
+        private PriorityQueue savePQueue(SortBTree tree) {
+            PriorityQueue<Flight> newQueue = new PriorityQueue<Flight>();
+            Stack<Flight> readIn = tree.saveTreeStack();
+            Flight tempFlight = readIn.pop();
+            String priorityString;
+            long priority;
+            while (tempFlight != null) {
+                priorityString = tempFlight.getDate().replace("/","");
+                priorityString += tempFlight.getTime();
+                priority = Long.parseLong(priorityString);
+                newQueue.enqueue(tempFlight, priority);
+                tempFlight = readIn.pop();
+            }
+            return newQueue;
+        }
     }
 
-    /*
-     * @author Garvin Hui
+    /**
+     * this class is a panel for adding flights with GUI
+     * @Author Garvin Hui
      */
     private class AddPanel extends JPanel implements ActionListener {
         JComboBox yearOptions;
@@ -212,25 +456,36 @@ public class AirportManager extends JFrame {
         JComboBox status;
 
         /**
-         * Constructor for panel of adding flights
+         * Constructor to make panel visible
+         * @Author Garvin Hui
          */
         AddPanel() {
             setLayout(null);
             LocalDate currentDate = LocalDate.now();
             int year = currentDate.getYear();
 
+            //creating strings for JComboBox to be used by JComboBox
             String[] yearStrings = {"-", Integer.toString(year), Integer.toString(year+1)};
             String[] monthStrings = new String[13];
             String[] directionStrings = {"-","Arriving", "Departing"};
             String[] statusStrings = {"-", "On Time", "Delayed", "Cancelled"};
             monthStrings[0] = "-";
             for (int i = 1; i < 13; i++) {
-                monthStrings[i] = Integer.toString(i);
+                if (i < 10) {
+                    monthStrings[i] = "0"+Integer.toString(i);
+                } else {
+                    monthStrings[i] = Integer.toString(i);
+                }
+
             }
             String[] dayStrings = new String[32];
             dayStrings[0] = "-";
             for (int i = 1; i < 32; i++) {
-                dayStrings[i] = Integer.toString(i);
+                if (i <10) {
+                    dayStrings[i] = "0"+Integer.toString(i);
+                } else {
+                    dayStrings[i] = Integer.toString(i);
+                }
             }
             String[] hourStrings = new String[25];
             hourStrings[0] = "-";
@@ -250,6 +505,7 @@ public class AirportManager extends JFrame {
                     minuteStrings[i+1] = Integer.toString(i);
                 }
             }
+            //String creation for JComboBox complete
 
             dayOptions = new JComboBox(dayStrings);
             monthOptions = new JComboBox(monthStrings);
@@ -258,13 +514,18 @@ public class AirportManager extends JFrame {
             minuteOptions = new JComboBox(minuteStrings);
             direction  = new JComboBox(directionStrings);
             status = new JComboBox(statusStrings);
-            JButton addFlight = new JButton("Add Flight");
-            JButton clear = new JButton("Clear");
+            JButton addFlight = new JButton("Add Flight");//this button adds flights
+            JButton clear = new JButton("Clear");//this button clears GUI
 
             monthOptions.addActionListener(this);
             yearOptions.addActionListener(this);
             addFlight.addActionListener(new ActionListener() {
                 @Override
+                /**
+                 * actionPerformed method overrided and checks that all fields and boxes have been selected before a flight can be added
+                 * Also makes boxes highlight red if incomplete
+                 * @Author Garvin Hui
+                 */
                 public void actionPerformed(ActionEvent e) {
                     boolean add = true;
                     if (yearOptions.getSelectedItem().equals("-")) {
@@ -313,7 +574,30 @@ public class AirportManager extends JFrame {
                         flightName.setBorder(BorderFactory.createLineBorder(Color.RED));
                         add = false;
                     } else {
-                        flightName.setBorder(new JTextField().getBorder());
+                        boolean formatted = true;
+                        String tempName = flightName.getText();
+                        tempName = tempName.toUpperCase();
+                        if (tempName.length() <= 6) {
+                            for (int i = 0; i < tempName.length(); i++) {
+                                if (i < 2) {
+                                    if ((tempName.charAt(i) < 'A') || (tempName.charAt(i) > 'Z')) {
+                                        formatted = false;
+                                    }
+                                } else {
+                                    if ((tempName.charAt(i) < '0') || (tempName.charAt(i) > '9')) {
+                                        formatted = false;
+                                    }
+                                }
+                            }
+                        } else {
+                            formatted = false;
+                        }
+                        if (formatted == false) {
+                            add = false;
+                            flightName.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        } else {
+                            flightName.setBorder(new JTextField().getBorder());
+                        }
                     }
                     if (flightCompany.getText().equals("")) {
                         flightCompany.setBorder(BorderFactory.createLineBorder(Color.RED));
@@ -328,19 +612,23 @@ public class AirportManager extends JFrame {
                         status.setBorder(BorderFactory.createEmptyBorder());
                     }
 
-                    if (add) {
+                    if (add) {//adding flights here
                         if (direction.getSelectedItem().equals("Arriving")) {
                             arrivals.add(new Flight(flightName.getText(), flightCompany.getText(), setLocation.getText(), yearOptions.getSelectedItem()+"/"+monthOptions.getSelectedItem()+"/"+dayOptions.getSelectedItem(), (String)hourOptions.getSelectedItem()+minuteOptions.getSelectedItem(), (String)status.getSelectedItem()));
                             clearInputs();
                         } else {
                             departures.add(new Flight(flightName.getText(), flightCompany.getText(), setLocation.getText(), yearOptions.getSelectedItem()+"/"+monthOptions.getSelectedItem()+"/"+dayOptions.getSelectedItem(), (String)hourOptions.getSelectedItem()+minuteOptions.getSelectedItem(), (String)status.getSelectedItem()));
-                            //clearInputs();
+                            clearInputs();
                         }
                     }
                 }
             });
             clear.addActionListener(new ActionListener() {
                 @Override
+                /**
+                 * Method overriding makes button clear GUI
+                 * @Author Garvin Hui
+                 */
                 public void actionPerformed(ActionEvent e) {
                     clearInputs();
                 }
@@ -379,9 +667,12 @@ public class AirportManager extends JFrame {
 
         @Override
         /**
-         *
+         * Overriding JComboBoxes checks for changes in year, month or date
+         * This allows for dynamic calendars (leap years, and day lengths matching each month)
+         * @Author Garvin Hui
          */
         public void actionPerformed(ActionEvent e) {
+            //These strings are used to for JComboBox models to be used by JComboBoxes
             Integer[] longMonths = {1,3,5,7,8,10,12};
             String[] longDates = new String[32];
             longDates[0] = "-";
@@ -393,23 +684,39 @@ public class AirportManager extends JFrame {
             leapDates[0] = "-";
             for (int i = 1; i < 32; i++) {
                 if (i < febDates.length) {
-                    febDates[i] = Integer.toString(i);
+                    if (i < 10) {
+                        febDates[i] = "0"+Integer.toString(i);
+                    } else {
+                        febDates[i] = Integer.toString(i);
+                    }
                 }
                 if (i < leapDates.length) {
-                    leapDates[i] = Integer.toString(i);
+                    if (i < 10) {
+                        leapDates[i] = "0"+Integer.toString(i);
+                    } else {
+                        leapDates[i] = Integer.toString(i);
+                    }
                 }
                 if (i < shortDates.length) {
-                    shortDates[i] = Integer.toString(i);
+                    if (i < 10) {
+                        shortDates[i] = "0"+Integer.toString(i);
+                    } else {
+                        shortDates[i] = Integer.toString(i);
+                    }
                 }
-                longDates[i] = Integer.toString(i);
+                if (i < 10) {
+                    longDates[i] = "0"+Integer.toString(i);
+                } else {
+                    longDates[i] = Integer.toString(i);
+                }
             }
             DefaultComboBoxModel monthLength;
 
             JComboBox source = (JComboBox)e.getSource();
-            if (source.equals(yearOptions)) {
+            if (source.equals(yearOptions)) {//if changes in year is made, reset month and day
                 monthOptions.setSelectedItem("-");
                 dayOptions.setSelectedItem("-");
-            } else if (source.equals(monthOptions)) {
+            } else if (source.equals(monthOptions)) {//dynamically changes day lengths to match each month
                 if (!monthOptions.getSelectedItem().equals("-")) {
                     int monthNumber = Integer.parseInt((String) monthOptions.getSelectedItem());
                     dayOptions.setSelectedItem("-");
@@ -438,8 +745,9 @@ public class AirportManager extends JFrame {
         }
 
         /**
-         *
+         * Displays GUI for addPanel for adding flights
          * @param g
+         * @Author Garvin Hui
          */
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -459,10 +767,15 @@ public class AirportManager extends JFrame {
             g.drawString("Day", 150, 50);
             g.drawString("Hour", 10, 140);
             g.drawString("Minute", 75, 140);
+            g.drawString("NOTE: Flight names but be for format", 300, 250);
+            g.drawString("LLN - LLNNNN where", 300, 270);
+            g.drawString("L is a letter and N is digit", 300, 290);
         }
 
         /**
-         *
+         * This method resets all text fields and JComboBoxes
+         * Method also restores all highlights of boxes to normal
+         * @Author Garvin Hui
          */
         public void clearInputs() {
             yearOptions.setSelectedIndex(0);
@@ -474,6 +787,7 @@ public class AirportManager extends JFrame {
             direction.setSelectedIndex(0);
             flightName.setText("");
             flightCompany.setText("");
+            status.setSelectedIndex(0);
             yearOptions.setBorder(BorderFactory.createEmptyBorder());
             monthOptions.setBorder(BorderFactory.createEmptyBorder());
             dayOptions.setBorder(BorderFactory.createEmptyBorder());
@@ -483,10 +797,10 @@ public class AirportManager extends JFrame {
             direction.setBorder(BorderFactory.createEmptyBorder());
             flightName.setBorder(new JTextField().getBorder());
             flightCompany.setBorder(new JTextField().getBorder());
+            status.setBorder(BorderFactory.createEmptyBorder());
         }
     }
 
-  
     /**
      * Loads up trees from a serialized file and stores the data into trees
      * @author Albert Quon
@@ -727,24 +1041,4 @@ public class AirportManager extends JFrame {
 
 
     }
-
-
-    private class testScroll extends JScrollPane {
-        testScroll() {
-            JTextArea test = new JTextArea(100,100);
-
-            JScrollPane scrollFrame = new JScrollPane(test);
-            scrollFrame.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            scrollFrame.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            scrollFrame.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-            this.setAutoscrolls(true);
-            scrollFrame.setPreferredSize(new Dimension(100,100));
-            scrollFrame.setVisible(true);
-            getContentPane().add(scrollFrame);
-            //this.add(scrollFrame, BorderLayout.CENTER);
-        }
-
-    }
-
-
 }

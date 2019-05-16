@@ -131,7 +131,7 @@ public class Flight implements Comparable<Flight>, java.io.Serializable {
                         timeA = Integer.parseInt(time);
                         timeB = Integer.parseInt(other.getTime());
                         if (timeA == timeB) {
-                            //sort by names if times are the same 
+                            //sort by names if times are the same
                             //compare flight names
                             compare = name.substring(0,2).compareTo(other.getName().substring(0,2));
                             if (compare == 0) {

@@ -169,19 +169,21 @@ public class SortBTree<E extends Comparable<E>> {
         node.setHeight(Integer.max(nodeHeight(node.getRight()), nodeHeight(node.getLeft())) + 1); // new height based on children
         int balance = balance(node); // find the balance based on the heights of its children
 
-        // if node's balance is greater than 1 or less than -1, then it's unbalanced
-        // check 4 cases of being unbalanced
-        // rotate nodes to fix the balance while maintaining order
+        // If node's balance is greater than 1 or less than -1, tree could be unbalanced along with its children
+        // children's height must be considered as well in case that they could be unbalanced that the removal could
+        // make the tree unbalanced
+        // Check 4 cases of being unbalanced
+        // Rotate nodes to fix the balance while maintaining order
 
         // left left
-        if ((balance > 1) && (item.compareTo((E)node.getLeft().getItem()) < 1)) {
+        if ((balance > 1) && (balance(node.getLeft()) >= 0)) {
             return rightRotate(node); // rotate right
-        } else if ((balance < -1) && (item.compareTo((E)node.getRight().getItem()) > 1)) { // right right
+        } else if ((balance < -1) && (balance(node.getLeft()) < 0)) { // right right
             return leftRotate(node);
-        } else if ((balance > 1) && (item.compareTo((E)node.getLeft().getItem()) > 1)) { // left right
+        } else if ((balance > 1) && (balance(node.getRight()) <= 0)) { // left right
             node.setLeft(leftRotate(node.getLeft())); // new parent
             return rightRotate(node);
-        } else if ((balance < -1) && (item.compareTo((E)node.getRight().getItem()) < 1)) { // right left
+        } else if ((balance < -1) && (balance(node.getRight()) > 0)) { // right left
             node.setRight(rightRotate(node.getRight())); // new parent
             return leftRotate(node);
         }
@@ -295,7 +297,7 @@ public class SortBTree<E extends Comparable<E>> {
         if (node == null) { //deals with null pointer
             return 0;
         }
-        return nodeHeight(node.getLeft()) - nodeHeight(node.getRight()); // height is based on subtree
+        return (nodeHeight(node.getLeft()) - nodeHeight(node.getRight())); // height is based on subtree
     }
 
     /**
@@ -334,8 +336,8 @@ public class SortBTree<E extends Comparable<E>> {
         node.setLeft(leftRight);
 
         // adjust heights based on their children and add 1 due to the rotation
-        left.setHeight((Integer.max(nodeHeight(left.getLeft()), nodeHeight(left.getRight())) + 1));
-        node.setHeight(Integer.max(nodeHeight(node.getLeft()), nodeHeight(node.getRight()) + 1));
+        left.setHeight(Integer.max(nodeHeight(left.getLeft()), nodeHeight(left.getRight()))+1);
+        node.setHeight(Integer.max(nodeHeight(node.getLeft()), nodeHeight(node.getRight()))+1);
 
         return left; // return the node so it can be used for the parent
     }
@@ -366,4 +368,3 @@ public class SortBTree<E extends Comparable<E>> {
         }
     }
 }
-
