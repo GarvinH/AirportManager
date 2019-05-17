@@ -104,6 +104,17 @@ class PriorityQueue<E> {
         }
         return index;
     }
+
+    public boolean contains(E item) {
+        PQNode<E> tempNode = head;
+        while (tempNode!= null) {
+            if (tempNode.getItem().equals(item)) {
+                return true;
+            }
+            tempNode = tempNode.getNext();
+        }
+        return false;
+    }
 }
 
 /** -------------------- INNER CLASS FOR NODE ----------- **/

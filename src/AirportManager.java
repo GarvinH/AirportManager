@@ -385,7 +385,7 @@ public class AirportManager extends JFrame {
         private void updateArrivals() {
             itemPQueue = savePQueue(arrivals);
             Flight tempFlight = itemPQueue.dequeue();
-            arriveModel.removeAllElements();//recreate a new list everytime (flight could be added in middle priority)
+            arriveModel.removeAllElements();//recreate a new list every time (flight could be added in middle priority)
             arriveSize = 0;//reset size of list
             for (int i = 0; i < arrivals.size(); i++) {
                 arriveNames.add(String.format("%-8s", tempFlight.getName()) + tempFlight.getDate() + "  " + tempFlight.getTime().substring(0, 2) + ":" + tempFlight.getTime().substring(2, 4) + "  " + String.format("%-11s", tempFlight.getStatus()) + tempFlight.getLocation());
@@ -400,11 +400,13 @@ public class AirportManager extends JFrame {
          * @Author Garvin Hui
          */
         private void updateDepartures() {
+            //save a tree as a priority queue and add flights
             itemPQueue = savePQueue(departures);
             Flight tempFlight = itemPQueue.dequeue();
             departModel.removeAllElements();
             departSize = 0;
             for (int i = 0; i < departures.size(); i++) {
+                //adding values to list to be displayed onto GUI
                 departNames.add(String.format("%-8s", tempFlight.getName()) + tempFlight.getDate() + "  " + tempFlight.getTime().substring(0,2) + ":" + tempFlight.getTime().substring(2,4) + "  " + String.format("%-11s", tempFlight.getStatus()) + tempFlight.getLocation());
                 departModel.addElement(departNames.get(departNames.size()-1));
                 departSize++;
@@ -580,7 +582,7 @@ public class AirportManager extends JFrame {
                             PriorityQueue<Flight> readIn = savePQueue(arrivals);
                             Flight tempFlight = readIn.dequeue();
                             while((tempFlight != null) && (exists == false)) {
-                                if (tempFlight.getName().equals(flightName.getText())) {
+                                if (tempFlight.getName().toUpperCase().equals(flightName.getText().toUpperCase())) {
                                     exists = true;
                                 } else {
                                     tempFlight = readIn.dequeue();
@@ -589,7 +591,7 @@ public class AirportManager extends JFrame {
                             readIn = savePQueue(departures);
                             tempFlight = readIn.dequeue();
                             while ((tempFlight != null) && ( exists == false)) {
-                                if (tempFlight.getName().equals(flightName.getText())) {
+                                if (tempFlight.getName().toUpperCase().equals(flightName.getText().toUpperCase())) {
                                     exists = true;
                                 } else {
                                     tempFlight = readIn.dequeue();
@@ -597,11 +599,11 @@ public class AirportManager extends JFrame {
                             }
                             if (!exists) {
                                 flightName.setBorder(new JTextField().getBorder());
-                                existing.setVisible(false);
+                                existing.setVisible(false);//hide popup explaining why flight won't add
                             } else {
                                 add = false;
                                 flightName.setBorder(BorderFactory.createLineBorder(Color.RED));
-                                existing.setVisible(true);
+                                existing.setVisible(true);//show popup to explain why flight won't add
                             }
                         }
                     }
@@ -620,10 +622,10 @@ public class AirportManager extends JFrame {
 
                     if (add) {//adding flights here
                         if (direction.getSelectedItem().equals("Arriving")) {
-                            arrivals.add(new Flight(flightName.getText(), flightCompany.getText(), setLocation.getText(), yearOptions.getSelectedItem()+"/"+monthOptions.getSelectedItem()+"/"+dayOptions.getSelectedItem(), (String)hourOptions.getSelectedItem()+minuteOptions.getSelectedItem(), (String)status.getSelectedItem()));
-                            clearInputs();
+                            arrivals.add(new Flight(flightName.getText().toUpperCase(), flightCompany.getText(), setLocation.getText(), yearOptions.getSelectedItem()+"/"+monthOptions.getSelectedItem()+"/"+dayOptions.getSelectedItem(), (String)hourOptions.getSelectedItem()+minuteOptions.getSelectedItem(), (String)status.getSelectedItem()));
+                            clearInputs();//resetting inputs after flight is added
                         } else {
-                            departures.add(new Flight(flightName.getText(), flightCompany.getText(), setLocation.getText(), yearOptions.getSelectedItem()+"/"+monthOptions.getSelectedItem()+"/"+dayOptions.getSelectedItem(), (String)hourOptions.getSelectedItem()+minuteOptions.getSelectedItem(), (String)status.getSelectedItem()));
+                            departures.add(new Flight(flightName.getText().toUpperCase(), flightCompany.getText(), setLocation.getText(), yearOptions.getSelectedItem()+"/"+monthOptions.getSelectedItem()+"/"+dayOptions.getSelectedItem(), (String)hourOptions.getSelectedItem()+minuteOptions.getSelectedItem(), (String)status.getSelectedItem()));
                             clearInputs();
                         }
                     }
@@ -658,7 +660,7 @@ public class AirportManager extends JFrame {
             clear.setBounds(500, 350, 80, 40);
 
             existing.setBounds(400, 40, 200, 25);
-            existing.setVisible(false);
+            existing.setVisible(false);//becomes visible later if user tries to add flight that already exists
 
             add(yearOptions);
             add(monthOptions);
@@ -721,12 +723,15 @@ public class AirportManager extends JFrame {
                 }
             }
             DefaultComboBoxModel monthLength;
+            //end of string creation for use by combo box model
 
             JComboBox source = (JComboBox)e.getSource();
+
+            //dynamically changes day lengths to match each month
             if (source.equals(yearOptions)) {//if changes in year is made, reset month and day
                 monthOptions.setSelectedItem("-");
                 dayOptions.setSelectedItem("-");
-            } else if (source.equals(monthOptions)) {//dynamically changes day lengths to match each month
+            } else if (source.equals(monthOptions)) {//checking if month belongs to month with 31 days
                 if (!monthOptions.getSelectedItem().equals("-")) {
                     int monthNumber = Integer.parseInt((String) monthOptions.getSelectedItem());
                     dayOptions.setSelectedItem("-");
@@ -735,17 +740,17 @@ public class AirportManager extends JFrame {
                         dayOptions.setModel(monthLength);
                     } else {
                         dayOptions.setSelectedItem("-");
-                        if (monthNumber == 2) {
+                        if (monthNumber == 2) {//if february
                             if (!yearOptions.getSelectedItem().equals("-")) {
-                                if (Integer.parseInt((String) yearOptions.getSelectedItem()) % 4 == 0) {
+                                if (Integer.parseInt((String) yearOptions.getSelectedItem()) % 4 == 0) {//if leap year
                                     monthLength = new DefaultComboBoxModel(leapDates);
                                     dayOptions.setModel(monthLength);
-                                } else {
+                                } else {//if not leapyear
                                     monthLength = new DefaultComboBoxModel(febDates);
                                     dayOptions.setModel(monthLength);
                                 }
                             }
-                        } else {
+                        } else {//month with 30 days
                             monthLength = new DefaultComboBoxModel(shortDates);
                             dayOptions.setModel(monthLength);
                         }
@@ -817,12 +822,14 @@ public class AirportManager extends JFrame {
      * @return priority queue of flights in order by date and time
      */
     public PriorityQueue savePQueue(SortBTree tree) {
+        //create priority queue by traversing through stack
         PriorityQueue<Flight> newQueue = new PriorityQueue<Flight>();
         Stack<Flight> readIn = tree.saveTreeStack();
         Flight tempFlight = readIn.pop();
         String priorityString;
         long priority;
         while (tempFlight != null) {
+            //priority is a long value according to date of flight: YYYYMMDDHHMM
             priorityString = tempFlight.getDate().replace("/","");
             priorityString += tempFlight.getTime();
             priority = Long.parseLong(priorityString);
