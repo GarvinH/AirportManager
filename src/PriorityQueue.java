@@ -11,7 +11,7 @@ class PriorityQueue<E> {
     private PQNode<E> head;
 
     /**
-     * Checks if Priority Queue is empoty
+     * Checks if Priority Queue is empty
      * @return returns whether queue is empty or not
      */
     public boolean isEmpty() {
@@ -33,19 +33,18 @@ class PriorityQueue<E> {
         if (head == null) {
             head = new PQNode<E>(item, priority);
         } else {
-            while((tempNode.getNext() != null) && (tempNode.compareTo(priority) < 1)) {
-                //System.out.println(tempNode.getItem() + " " + item);
+            while((tempNode.getNext() != null) && (tempNode.compareTo(priority) < 1)) {//travelling to the end of list or to the position after the newest node with same priority
                 tempNode = tempNode.getNext();
             }
 
-            if (tempNode.compareTo(priority) <= 0) {
+            if (tempNode.compareTo(priority) <= 0) {//used when travelled to the last node and priority is still lower or equal
                 tempNode.setNext(new PQNode(item, priority, null, tempNode));
             } else {
-                if (tempNode.getPrevious() != null) {
+                if (tempNode.getPrevious() != null) {//used when adding node into middle of queue
                     tempNode = tempNode.getPrevious();
                     tempNode.setNext(new PQNode(item, priority, tempNode.getNext(), tempNode));
                     tempNode.getNext().getNext().setPrevious(tempNode.getNext());
-                } else {
+                } else {//used when current node because the new head
                     tempNode.setPrevious(new PQNode(item, priority, tempNode, null));
                     head = tempNode.getPrevious();
                 }
@@ -54,8 +53,8 @@ class PriorityQueue<E> {
     }
 
     /**
-     * Removes first item added
-     * @return returns item to be removed
+     * Removes oldest items
+     * @return returns item being removed
      */
     public E dequeue() {
         if (head == null) {
